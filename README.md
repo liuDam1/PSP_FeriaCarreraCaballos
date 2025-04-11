@@ -4,8 +4,12 @@
     - [Objetivo del juego](#objetivo-del-juego)
     - [Características principales](#características-principales)
 - [Análisis y prototipo](#análisis-y-prototipo)
-
-
+    - [Análisis](#análisis)
+        - [Requisitos Funcionales](#requisitos-funcionales)
+        - [Requisitos No Funcionales](#requisitos-no-funcionales)
+    - [Prototipo](#prototipo)
+        - [Diagrama de Flujo](#diagrama-de-flujo)
+        
 # Introducción
 ## Objetivo del juego
 Dos jugadores competirán para llegar primero a la meta. Cada jugador tendrá un camello asignado y deberá registrarse con un nombre único. El juego avanzará automáticamente, moviendo los camellos hasta que uno de ellos cruce la línea de meta y gana un certificado de ganador.

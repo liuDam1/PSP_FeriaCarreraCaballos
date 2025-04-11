@@ -79,51 +79,16 @@ Dos jugadores competirán para llegar primero a la meta. Cada jugador tendrá un
 
 ### Diagrama de Flujo
 
-@startuml CarreraDeCamellos
-title Diagrama de Flujo - Carrera de Camellos
-skinparam monochrome true
-skinparam shadowing false
-skinparam defaultFontName Arial
-skinparam activity {
-    BackgroundColor White
-    BorderColor Black
-    FontColor Black
-}
-
-start
-:Inicio del Juego;
-note right: Versión 1.0
-
-partition "Fase de Registro" {
-    :Pantalla de Registro;
-    repeat
-      :Esperar 2 jugadores;
-      note left: Validar nombres únicos
-    repeat while (¿2 jugadores registrados?) is (No)
-    ->Sí;
-}
-
-partition "Carrera" {
-    :Asignar camellos\n(Color/Número);
-    :Iniciar Carrera;
-    repeat
-      :Avance aleatorio;
-      if (¿Evento especial?) then (Sí)
-        :Otorgar avance extra;
-      else (No)
-      endif
-    repeat while (¿Alguien llegó a la meta?) is (No)
-    ->Sí;
-}
-
-partition "Post-Juego" {
-    :Mostrar Ganador;
-    :Generar Markdown\n(nombre, fecha, avatar);
-    :Convertir a PDF\n(vía Docker/Pandoc);
-    :Guardar en Historial\n(SQLite/txt);
-    :Volver a Inicio;
-}
-
-stop
-
-@enduml
+```mermaid
+graph TD
+    A[Inicio] --> B[Pantalla de Registro]
+    B --> C[Esperar 2 jugadores]
+    C --> D[Iniciar Carrera]
+    D --> E[Avance Aleatorio de Camellos]
+    E --> F{¿Alguien llegó a la meta?}
+    F -- Sí --> G[Mostrar Ganador]
+    G --> H[Generar Markdown y transformar a PDF]
+    F -- No --> E
+    H --> I[Guardar en Historial]
+    I --> J[Volver a Inicio]
+```

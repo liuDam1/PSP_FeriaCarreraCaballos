@@ -96,3 +96,9 @@ graph TD
     H --> I[Guardar en Historial]
     I --> J[Volver a Inicio]
 ```
+
+### Diagrama de Despliegue
+<img src="./Multimedia/DiagramaDespliegue.png">
+
+### Diagrama de Clases
+<img src="./Multimedia/DiagramaClase.png">

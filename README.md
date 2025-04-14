@@ -105,25 +105,4 @@ graph TD
 ### Diagrama de Clases
 <img src="./Multimedia/DiagramaClase.png">
 
-### Diagrama de Casos de Uso
-@startuml
-left to right direction
-
-actor Jugador
-
-rectangle "Sistema de Carrera de Camellos" {
-    usecase "Registrarse" as UC1
-    usecase "Iniciar Partida" as UC2
-    usecase "Ver Carrera" as UC3
-    usecase "Obtener Certificado" as UC4
-    usecase "Consultar Historial" as UC5
-}
-
-Jugador --> UC1
-Jugador --> UC2
-Jugador --> UC3
-Jugador --> UC4
-Jugador --> UC5
-
-@enduml
 

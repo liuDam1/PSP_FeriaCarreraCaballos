@@ -9,10 +9,10 @@
         - [Requisitos No Funcionales](#requisitos-no-funcionales)
     - [Prototipo](#prototipo)
         - [Diagrama de Flujo](#diagrama-de-flujo)
-        - [Diagrama de Despliegue](#diagrama-de-despliegue)
 - [Arquitectura, Diseño y Plan de Pruebas](#arquitectura-diseño-y-plan-de-pruebas)
     - [Arqitectura](#arquitectura)
     - [Diseño](#diseño)
+        - [Diagrama de Despliegue](#diagrama-de-despliegue)
         - [Diagrama de Clases](#diagrama-de-clases)
     - [Plan de Pruebas](#plan-de-pruebas)
         
@@ -103,9 +103,6 @@ graph TD
     I --> J[Volver a Inicio]
 ```
 
-### Diagrama de Despliegue
-<img src="./Multimedia/DiagramaDespliegue.png">
-
 # Arquitectura, Diseño y Plan de Pruebas
 ## Arquitectura 
 - Cliente servidor.
@@ -119,9 +116,11 @@ graph TD
 
 ## Diseño
 
+### Diagrama de Despliegue
+<img src="./Multimedia/DiagramaDespliegue.png">
+
 ### Diagrama de Clases
 <img src="./Multimedia/DiagramaClase.png">
-
 
 ## Plan de pruebas
 - Verificar si las jugadores se registran y los caballos se asignan correctamente

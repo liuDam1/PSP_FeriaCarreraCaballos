@@ -81,7 +81,7 @@ Dos jugadores competirán para llegar primero a la meta. Cada jugador tendrá un
 - **Base de datos simple:**
     - SQLite o txt para almacenar historial
 
-## 2. Prototipo
+## Prototipo
 
 ### Diagrama de Flujo
 
@@ -105,4 +105,13 @@ graph TD
 ### Diagrama de Clases
 <img src="./Multimedia/DiagramaClase.png">
 
+## Plan de pruebas
+- Verificar si las jugadores se registran y los caballos se asignan correctamente
+- Verificar si los camellos avanzan correctamente.
+- Verificar si el ganador se muestra correctamente.
+- Verificar si los turnos y los avances son aleatorios.
+- Verificar si el certificado se genera correctamente.
+- Verificar si el historial se guarda correctamente.
+- Si hay, verificar si se conectan desde otro equipo al servidor.
+- Si hay, verificar si con hacer operaciones extras se avanza los caballos mas rapido.
 

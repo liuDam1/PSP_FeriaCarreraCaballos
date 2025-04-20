@@ -10,7 +10,11 @@
     - [Prototipo](#prototipo)
         - [Diagrama de Flujo](#diagrama-de-flujo)
         - [Diagrama de Despliegue](#diagrama-de-despliegue)
+- [Arquitectura, Diseño y Plan de Pruebas](#arquitectura-diseño-y-plan-de-pruebas)
+    - [Arqitectura](#arquitectura)
+    - [Diseño](#diseño)
         - [Diagrama de Clases](#diagrama-de-clases)
+    - [Plan de Pruebas](#plan-de-pruebas)
         
 # Introducción
 ## Objetivo del juego
@@ -102,9 +106,7 @@ graph TD
 ### Diagrama de Despliegue
 <img src="./Multimedia/DiagramaDespliegue.png">
 
-### Diagrama de Clases
-<img src="./Multimedia/DiagramaClase.png">
-
+# Arquitectura, Diseño y Plan de Pruebas
 ## Arquitectura 
 - Cliente servidor.
 - Lenguaje de programación Java.
@@ -114,6 +116,11 @@ graph TD
 - Uso de Docker para la generación de markdown a PDF.
 - Uso de sockets para la comunicación en red (si se implementa).
 - Uso de SceneBuilder para la creación de la interfaz gráfica.
+
+## Diseño
+
+### Diagrama de Clases
+<img src="./Multimedia/DiagramaClase.png">
 
 
 ## Plan de pruebas

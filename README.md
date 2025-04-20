@@ -105,6 +105,17 @@ graph TD
 ### Diagrama de Clases
 <img src="./Multimedia/DiagramaClase.png">
 
+## Arquitectura 
+- Cliente servidor.
+- Lenguaje de programación Java.
+- Patrón MVC.
+- Uso de JavaFX para la interfaz gráfica.
+- Uso de SQLite o txt para la persistencia de datos.
+- Uso de Docker para la generación de markdown a PDF.
+- Uso de sockets para la comunicación en red (si se implementa).
+- Uso de SceneBuilder para la creación de la interfaz gráfica.
+
+
 ## Plan de pruebas
 - Verificar si las jugadores se registran y los caballos se asignan correctamente
 - Verificar si los camellos avanzan correctamente.

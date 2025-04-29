@@ -91,7 +91,7 @@ Dos jugadores competirán para llegar primero a la meta. Cada jugador tendrá un
 
 ```mermaid
 graph TD
-    A[Inicio] --> B[Pantalla de Registro]
+    A[Inicio] --> B[Registro]
     B --> C[Esperar 2 jugadores]
     C --> D[Iniciar Carrera]
     D --> E[Avance Aleatorio de Camellos]
@@ -123,12 +123,10 @@ graph TD
 <img src="./Multimedia/DiagramaClase.png">
 
 ## Plan de pruebas
-- Verificar si las jugadores se registran y los caballos se asignan correctamente
-- Verificar si los camellos avanzan correctamente.
-- Verificar si el ganador se muestra correctamente.
-- Verificar si los turnos y los avances son aleatorios.
-- Verificar si el certificado se genera correctamente.
-- Verificar si el historial se guarda correctamente.
-- Si hay, verificar si se conectan desde otro equipo al servidor.
-- Si hay, verificar si con hacer operaciones extras se avanza los caballos mas rapido.
-
+- Registrar jugador y asignar caballos.
+- Los cavallos avanzan dependiendo del numero generado.
+- Muestra el ganador.
+- Turnos y avances son aleatorios.
+- Genera el certificado.
+- Guarda el historial.
+- Conexión desde otro equipo al servidor.

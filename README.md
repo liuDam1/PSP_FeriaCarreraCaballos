@@ -73,17 +73,35 @@ Dos jugadores competirán para llegar primero a la meta. Cada jugador tendrá un
 
 ### Requisitos No Funcionales
 
-- **Diseño de interfaz:**
-    - Interfaz echo por SceneBuilder de JavaFX
+- **Rendimiento**
+    - Interfaz responde en <1s a acciones del usuario
+    - Sincronización en red con latencia máxima de 500ms
+    - Generación de PDF en ≤5 segundos
 
-- **Comunicación en red (opcional):**
-    - Posibilidad de jugar en red local o en línea (con sockets)
+- **Escalabilidad**
+    - Base de datos soporta 10,000 registros de historial
+    - Arquitectura permite 2 jugadores (modo red)
 
-- **Generación de PDF:**
-    - Se genera en markdown y se convierte a PDF con Doker.
+- **Usabilidad**
+    - Interfaz JavaFX con SceneBuilder
+    - Tamaño de fuente adaptable.
 
-- **Base de datos simple:**
-    - SQLite o txt para almacenar historial
+- **Portabilidad**
+    - Compatible con:
+        - Windows 10+
+        - Generación de PDF multiplataforma mediante Docker.
+
+- **Fiabilidad**
+    - Persistencia de datos garantizada (SQLite o TXT).
+    - Recuperación de datos en fallos
+
+- **Mantenibilidad**
+    - Código modular (MVC)
+
+- **Seguridad**
+    - Validación de:
+        - Nombres únicos (sin caracteres especiales)
+        - IPs válidas en conexión red
 
 ## Prototipo
 
@@ -115,12 +133,12 @@ graph TD
 - Uso de SceneBuilder para la creación de la interfaz gráfica.
 
 ## Diseño
+### GUI
+<img src="./Multimedia/GUI_Inicio.png">
 
 ### Diagrama de Despliegue
 <img src="./Multimedia/DiagramaDespliegue.png">
 
-### Diagrama de Clases
-<img src="./Multimedia/DiagramaClase.png">
 
 ## Plan de pruebas
 - Registrar jugador y asignar caballos.

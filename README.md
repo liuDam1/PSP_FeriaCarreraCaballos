@@ -136,6 +136,8 @@ graph TD
 ### GUI
 <img src="./Multimedia/GUI_Inicio.png">
 
+<img src="./Multimedia/GUI_Juego.png">
+
 ### Diagrama de Despliegue
 <img src="./Multimedia/DiagramaDespliegue.png">
 

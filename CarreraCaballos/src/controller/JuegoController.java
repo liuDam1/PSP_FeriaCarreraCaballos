@@ -3,6 +3,7 @@ package controller;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.text.Font;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import model.Carrera;
@@ -64,17 +65,18 @@ public class JuegoController {
     }
     
     private void actualizarEtiquetaTurno() {
-        etiquetaTurno.setText("Turno de: " + carrera.getTurno().getNombre());
+        etiquetaTurno.setText(carrera.getTurno().getNombre());
     }
     
     @FXML
     private void handleAceptar() {
         Jugador jugadorActual = carrera.getTurno();
+        int puntosBase = carrera.getPuntosRonda();
         
         if (operacionActual != null) {
             try {
                 int respuesta = Integer.parseInt(campoRespuesta.getText());
-                int puntos = 10;
+                int puntos = puntosBase;
                 
                 if (operacionActual.verificarResultado(respuesta)) {
                     puntos += 5;
@@ -116,7 +118,7 @@ public class JuegoController {
                 campoRespuesta.setVisible(true);
                 campoRespuesta.requestFocus();
             } else {
-                jugadorActual.sumarPuntos(10);
+                jugadorActual.sumarPuntos(puntosBase);
                 actualizarPuntuaciones();
                 
                 if (carrera.hayGanador()) {

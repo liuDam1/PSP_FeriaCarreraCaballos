@@ -28,7 +28,15 @@ public class Carrera {
     }
     
     public void cambiarTurno() {
-        turno = (turno == jugador1) ? jugador2 : jugador1;
+        // 50% de probabilidad de cambiar de jugador
+        if (random.nextBoolean()) {
+            turno = (turno == jugador1) ? jugador2 : jugador1;
+        }
+    }
+    
+    public int getPuntosRonda() {
+        // Puntos aleatorios entre 1 y 10
+        return random.nextInt(10) + 1;
     }
     
     public boolean hayOperacion() {

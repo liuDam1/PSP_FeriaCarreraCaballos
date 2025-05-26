@@ -5,7 +5,9 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 public class App extends Application {
-    public static final String RUTA_INICIO = "/vista/Inicio.fxml";
+    public static final String RUTA_INICIO = "/view/Inicio.fxml";
+    public static final String RUTA_JUEGO = "/view/Juego.fxml";
+    
     @Override
     public void start(Stage primaryStage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource(RUTA_INICIO));
@@ -16,4 +18,4 @@ public class App extends Application {
     public static void main(String[] args) {
         launch(args);
     }
-}
+}    

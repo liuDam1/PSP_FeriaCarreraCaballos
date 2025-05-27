@@ -43,4 +43,4 @@ public class Operacion {
     public String toString() {
         return num1 + " " + operador + " " + num2;
     }
-}    
+}

@@ -1,12 +1,14 @@
 package model;
 
-public class Operacion {
+import java.io.Serializable;
+
+public class Operacion implements Serializable{
     private int num1;
     private int num2;
     private char operador;
     private int resultado;
 
-    public Operacion(int num1, int num2, char operador) {
+    public Operacion (int num1, int num2, char operador) {
         this.num1 = num1;
         this.num2 = num2;
         this.operador = operador;

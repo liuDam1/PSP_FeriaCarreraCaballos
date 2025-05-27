@@ -37,6 +37,7 @@ public class JuegoController {
 
     /**
      * Inicializa los datos del juego y establece la conexión con el servidor.
+     * 
      * @param jugador1 Primer jugador.
      * @param jugador2 Segundo jugador.
      */
@@ -50,11 +51,11 @@ public class JuegoController {
             // Configurar la interfaz de usuario con los nombres de los jugadores
             etiquetaJugador1.setText(jugador1.getNombre());
             etiquetaJugador2.setText(jugador2.getNombre());
-            
+
             // Elegir aleatoriamente el jugador que comienza
             jugadorTurno = (Math.random() < 0.5) ? jugador1 : jugador2;
             etiquetaTurno.setText("Turno de: " + jugadorTurno.getNombre());
-            
+
             // Actualizar la interfaz con los puntos iniciales
             actualizarInterfaz();
 
@@ -64,7 +65,7 @@ public class JuegoController {
         } catch (IOException e) {
             e.printStackTrace();
             mostrarError("Error al conectar con el servidor: " + e.getMessage());
-            
+
             // Cerrar la conexión en caso de error
             if (cliente != null) {
                 cliente.cerrarConexion();
@@ -82,15 +83,15 @@ public class JuegoController {
             mostrarError("Debes ingresar una respuesta");
             return;
         }
-        
+
         try {
             int respuesta = Integer.parseInt(campoRespuesta.getText());
-            
+
             if (operacionActual == null) {
                 mostrarError("No hay una operación activa");
                 return;
             }
-            
+
             // Verificar la respuesta con el servidor
             boolean correcto = cliente.verificarRespuesta(respuesta, operacionActual);
 
@@ -113,11 +114,11 @@ public class JuegoController {
             if (jugador1.getPuntos() >= 100 || jugador2.getPuntos() >= 100) {
                 Jugador ganador = (jugador1.getPuntos() >= 100) ? jugador1 : jugador2;
                 Jugador perdedor = (ganador == jugador1) ? jugador2 : jugador1;
-                
+
                 // Guardar el resultado de la partida
                 Persistencia.guardarPartida(jugador1.getNombre(), jugador2.getNombre(), ganador.getNombre(),
                         ganador.getPuntos(), perdedor.getPuntos());
-                
+
                 // Mostrar mensaje de victoria y cerrar la conexión
                 mostrarMensajeGanador(ganador);
                 if (cliente != null) {
@@ -135,7 +136,7 @@ public class JuegoController {
         } catch (Exception e) {
             e.printStackTrace();
             mostrarError("Error: " + e.getMessage());
-            
+
             // Cerrar la conexión en caso de error
             if (cliente != null) {
                 cliente.cerrarConexion();
@@ -166,6 +167,7 @@ public class JuegoController {
 
     /**
      * Muestra la operación matemática en la interfaz de usuario.
+     * 
      * @param op Operación a mostrar.
      */
     private void mostrarOperacion(Operacion op) {
@@ -197,6 +199,7 @@ public class JuegoController {
 
     /**
      * Muestra un mensaje de error en una ventana emergente.
+     * 
      * @param mensaje Mensaje de error a mostrar.
      */
     private void mostrarError(String mensaje) {
@@ -209,6 +212,7 @@ public class JuegoController {
 
     /**
      * Muestra un mensaje informativo en una ventana emergente.
+     * 
      * @param mensaje Mensaje a mostrar.
      */
     private void mostrarMensaje(String mensaje) {
@@ -221,14 +225,15 @@ public class JuegoController {
 
     /**
      * Muestra un mensaje de victoria en una ventana emergente.
+     * 
      * @param ganador Jugador ganador.
      */
     private void mostrarMensajeGanador(Jugador ganador) {
         Alert alert = new Alert(AlertType.INFORMATION);
         alert.setTitle("Fin del juego");
         alert.setHeaderText(null);
-        alert.setContentText("El ganador es: " + ganador.getNombre() + 
-                             "\nPuntos: " + ganador.getPuntos());
+        alert.setContentText("El ganador es: " + ganador.getNombre() +
+                "\nPuntos: " + ganador.getPuntos());
         alert.showAndWait();
     }
 }

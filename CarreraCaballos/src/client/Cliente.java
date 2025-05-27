@@ -8,8 +8,10 @@ import java.net.Socket;
 import model.Operacion;
 
 /**
- * Clase que representa el cliente en la aplicación de juego de operaciones matemáticas.
- * Se encarga de establecer la conexión con el servidor y enviar/receive datos durante el juego.
+ * Clase que representa el cliente en la aplicación de juego de operaciones
+ * matemáticas.
+ * Se encarga de establecer la conexión con el servidor y enviar/receive datos
+ * durante el juego.
  */
 public class Cliente {
     private Socket socket;
@@ -21,6 +23,7 @@ public class Cliente {
     /**
      * Constructor de la clase Cliente.
      * Establece la conexión con el servidor y crea los flujos de entrada y salida.
+     * 
      * @throws IOException Si ocurre un error al establecer la conexión.
      */
     public Cliente() throws IOException {
@@ -28,7 +31,7 @@ public class Cliente {
             System.out.println("Cliente: Intentando conectar a " + DIRECCION_SERVIDOR + ":" + PUERTO);
             socket = new Socket(DIRECCION_SERVIDOR, PUERTO);
             System.out.println("Cliente: Conexión establecida con éxito");
-            
+
             // Crear flujos de entrada y salida para la comunicación con el servidor
             out = new ObjectOutputStream(socket.getOutputStream());
             in = new ObjectInputStream(socket.getInputStream());
@@ -41,6 +44,7 @@ public class Cliente {
 
     /**
      * Envía los nombres de los jugadores al servidor.
+     * 
      * @param jugador1 Nombre del primer jugador.
      * @param jugador2 Nombre del segundo jugador.
      * @throws IOException Si ocurre un error al enviar los datos.
@@ -61,21 +65,23 @@ public class Cliente {
 
     /**
      * Solicita una nueva operación matemática al servidor.
+     * 
      * @return Operacion generada por el servidor.
-     * @throws IOException Si ocurre un error de comunicación.
-     * @throws ClassNotFoundException Si no se encuentra la clase Operacion al recibir datos.
+     * @throws IOException            Si ocurre un error de comunicación.
+     * @throws ClassNotFoundException Si no se encuentra la clase Operacion al
+     *                                recibir datos.
      */
     public Operacion solicitarOperacion() throws IOException, ClassNotFoundException {
         try {
             System.out.println("Cliente: Solicitando operación");
             out.writeObject("SOLICITAR_OPERACION");
             out.flush();
-            
+
             Operacion operacion = (Operacion) in.readObject();
-            System.out.println("Cliente: Operación recibida - " + 
-                              operacion.getNum1() + " " + 
-                              operacion.getOperador() + " " + 
-                              operacion.getNum2());
+            System.out.println("Cliente: Operación recibida - " +
+                    operacion.getNum1() + " " +
+                    operacion.getOperador() + " " +
+                    operacion.getNum2());
             return operacion;
         } catch (IOException | ClassNotFoundException e) {
             System.err.println("Cliente: Error al solicitar operación: " + e.getMessage());
@@ -86,10 +92,11 @@ public class Cliente {
 
     /**
      * Envía la respuesta del jugador al servidor y verifica si es correcta.
+     * 
      * @param respuesta Respuesta ingresada por el jugador.
      * @param operacion Operación actual que se está resolviendo.
      * @return true si la respuesta es correcta, false en caso contrario.
-     * @throws IOException Si ocurre un error de comunicación.
+     * @throws IOException            Si ocurre un error de comunicación.
      * @throws ClassNotFoundException Si no se encuentra la clase al recibir datos.
      */
     public boolean verificarRespuesta(int respuesta, Operacion operacion) throws IOException, ClassNotFoundException {
@@ -98,7 +105,7 @@ public class Cliente {
             out.writeObject("VERIFICAR_RESPUESTA");
             out.writeObject(respuesta);
             out.flush();
-            
+
             boolean esCorrecta = (Boolean) in.readObject();
             System.out.println("Cliente: Respuesta " + (esCorrecta ? "correcta" : "incorrecta"));
             return esCorrecta;
@@ -115,9 +122,12 @@ public class Cliente {
     public void cerrarConexion() {
         System.out.println("Cliente: Cerrando conexión");
         try {
-            if (in != null) in.close();
-            if (out != null) out.close();
-            if (socket != null) socket.close();
+            if (in != null)
+                in.close();
+            if (out != null)
+                out.close();
+            if (socket != null)
+                socket.close();
         } catch (IOException e) {
             e.printStackTrace();
         }

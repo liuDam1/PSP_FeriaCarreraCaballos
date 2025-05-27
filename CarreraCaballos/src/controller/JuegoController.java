@@ -3,160 +3,78 @@ package controller;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
-import model.Carrera;
+
+import java.io.IOException;
+
+import client.Cliente;
 import model.Jugador;
 import model.Operacion;
-import util.Persistencia;
 
 public class JuegoController {
-    @FXML
-    private Label etiquetaJugador1;
+    @FXML private Label etiquetaJugador1, etiquetaJugador2;
+    @FXML private Label etiquetaPuntos1, etiquetaPuntos2;
+    @FXML private Label numero1Operacion, numero2Operacion, operador;
+    @FXML private TextField campoRespuesta;
+    @FXML private Label etiquetaTurno;
     
-    @FXML
-    private Label etiquetaJugador2;
-    
-    @FXML
-    private Label etiquetaPuntos1;
-    
-    @FXML
-    private Label etiquetaPuntos2;
-    
-    @FXML
-    private Label numero1Operacion;
-    
-    @FXML
-    private Label numero2Operacion;
-    
-    @FXML
-    private Label operador;
-    
-    @FXML
-    private Label igual;
-    
-    @FXML
-    private TextField campoRespuesta;
-    
-    @FXML
-    private Label etiquetaTurno;
-    
-    private Carrera carrera;
+    private Cliente cliente;
     private Operacion operacionActual;
-    
+
     public void initData(Jugador jugador1, Jugador jugador2) {
-        carrera = new Carrera(jugador1, jugador2);
-        
-        etiquetaJugador1.setText(jugador1.getNombre());
-        etiquetaJugador2.setText(jugador2.getNombre());
-        actualizarPuntuaciones();
-        actualizarEtiquetaTurno();
-        
-        numero1Operacion.setVisible(false);
-        numero2Operacion.setVisible(false);
-        operador.setVisible(false);
-        igual.setVisible(false);
-        campoRespuesta.setVisible(false);
+        try {
+            cliente = new Cliente();
+            cliente.enviarJugadores(jugador1, jugador2);
+            
+            etiquetaJugador1.setText(jugador1.getNombre());
+            etiquetaJugador2.setText(jugador2.getNombre());
+            actualizarInterfaz();
+            
+        } catch (IOException e) {
+            mostrarError("Error al conectar con el servidor");
+        }
     }
-    
-    private void actualizarPuntuaciones() {
-        etiquetaPuntos1.setText(String.valueOf(carrera.getJugador1().getPuntos()));
-        etiquetaPuntos2.setText(String.valueOf(carrera.getJugador2().getPuntos()));
-    }
-    
-    private void actualizarEtiquetaTurno() {
-        etiquetaTurno.setText(carrera.getTurno().getNombre());
-    }
-    
+
     @FXML
     private void handleAceptar() {
-        Jugador jugadorActual = carrera.getTurno();
-        int puntosBase = carrera.getPuntosRonda();
-        
-        if (operacionActual != null) {
-            try {
+        try {
+            if (operacionActual == null) {
+                operacionActual = cliente.solicitarOperacion();
+                mostrarOperacion(operacionActual);
+            } else {
                 int respuesta = Integer.parseInt(campoRespuesta.getText());
-                int puntos = puntosBase;
+                boolean correcto = cliente.verificarRespuesta(respuesta, operacionActual);
                 
-                if (operacionActual.verificarResultado(respuesta)) {
-                    puntos += 5;
-                }
-                
-                jugadorActual.sumarPuntos(puntos);
-                actualizarPuntuaciones();
-                
-                if (carrera.hayGanador()) {
-                    guardarHistorial();
-                    mostrarMensajeGanador();
-                    return;
+                if (correcto) {
+                    // Lógica para sumar puntos
                 }
                 
                 operacionActual = null;
-                numero1Operacion.setVisible(false);
-                numero2Operacion.setVisible(false);
-                operador.setVisible(false);
-                igual.setVisible(false);
-                campoRespuesta.setVisible(false);
-                campoRespuesta.setText("");
-                
-                carrera.cambiarTurno();
-                actualizarEtiquetaTurno();
-            } catch (NumberFormatException e) {
-                campoRespuesta.setText("");
+                limpiarOperacion();
+                actualizarInterfaz();
             }
-        } else {
-            if (carrera.hayOperacion()) {
-                operacionActual = carrera.generarOperacion();
-                
-                numero1Operacion.setText(String.valueOf(operacionActual.getNum1()));
-                numero2Operacion.setText(String.valueOf(operacionActual.getNum2()));
-                operador.setText(String.valueOf(operacionActual.getOperador()));
-                
-                numero1Operacion.setVisible(true);
-                numero2Operacion.setVisible(true);
-                operador.setVisible(true);
-                igual.setVisible(true);
-                campoRespuesta.setVisible(true);
-                campoRespuesta.requestFocus();
-            } else {
-                jugadorActual.sumarPuntos(puntosBase);
-                actualizarPuntuaciones();
-                
-                if (carrera.hayGanador()) {
-                    guardarHistorial();
-                    mostrarMensajeGanador();
-                    return;
-                }
-                
-                carrera.cambiarTurno();
-                actualizarEtiquetaTurno();
-            }
+        } catch (Exception e) {
+            mostrarError("Error: " + e.getMessage());
         }
     }
-    
-    private void guardarHistorial() {
-        Jugador ganador = carrera.getGanador();
-        Jugador perdedor = (ganador == carrera.getJugador1()) ? carrera.getJugador2() : carrera.getJugador1();
-        
-        Persistencia.guardarPartida(
-            carrera.getJugador1().getNombre(),
-            carrera.getJugador2().getNombre(),
-            ganador.getNombre(),
-            ganador.getPuntos(),
-            perdedor.getPuntos()
-        );
+
+    private void mostrarOperacion(Operacion op) {
+        numero1Operacion.setText(String.valueOf(op.getNum1()));
+        numero2Operacion.setText(String.valueOf(op.getNum2()));
+        operador.setText(String.valueOf(op.getOperador()));
     }
-    
-    private void mostrarMensajeGanador() {
-        Jugador ganador = carrera.getGanador();
-        
-        Alert alert = new Alert(AlertType.INFORMATION);
-        alert.setTitle("Fin del juego");
-        alert.setHeaderText("¡Tenemos un ganador!");
-        alert.setContentText("El jugador " + ganador.getNombre() + " ha ganado con " + 
-                             ganador.getPuntos() + " puntos.\n\n" +
-                             "El resultado se ha guardado en el historial.");
-        
-        alert.showAndWait();
+
+    private void limpiarOperacion() {
+        numero1Operacion.setText("");
+        numero2Operacion.setText("");
+        operador.setText("");
+        campoRespuesta.clear();
     }
-}    
+
+    private void actualizarInterfaz() {
+        // Actualizar puntos y turno (requiere métodos adicionales en el servidor)
+    }
+
+    private void mostrarError(String mensaje) {
+        // Implementar alerta de error
+    }
+}

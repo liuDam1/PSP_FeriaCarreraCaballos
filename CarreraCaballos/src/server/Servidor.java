@@ -10,121 +10,54 @@ import model.Carrera;
 import model.Operacion;
 
 public class Servidor {
-    private static final int PUERTO = 12345;
-    private ServerSocket servidorSocket;
-    private Socket socketCliente;
-    private ObjectOutputStream out;
-    private ObjectInputStream in;
+    private static final int PUERTO = 44444;
     private Carrera carrera;
-    
-    public Servidor() {
-        try {
-            servidorSocket = new ServerSocket(PUERTO);
-            System.out.println("Servidor iniciado en el puerto " + PUERTO);
-            
-            // Esperar a que un cliente se conecte
-            socketCliente = servidorSocket.accept();
-            System.out.println("Cliente conectado");
-            
-            // Inicializar flujos de entrada/salida
-            out = new ObjectOutputStream(socketCliente.getOutputStream());
-            in = new ObjectInputStream(socketCliente.getInputStream());
-            
-            // Comenzar a manejar solicitudes del cliente
-            manejarCliente();
+
+    public static void main(String[] args) {
+        new Servidor().iniciar();
+    }
+
+    public void iniciar() {
+        try (ServerSocket servidor = new ServerSocket(PUERTO)) {
+            System.out.println("Servidor iniciado en puerto " + PUERTO);
+
+            while (true) {
+                Socket cliente = servidor.accept();
+                new Thread(() -> manejarCliente(cliente)).start();
+            }
         } catch (IOException e) {
             e.printStackTrace();
-        } finally {
-            cerrar();
         }
     }
-    
-    private void manejarCliente() {
-        try {
-            // Recibir jugadores desde el cliente
+
+    private void manejarCliente(Socket cliente) {
+        try (ObjectOutputStream out = new ObjectOutputStream(cliente.getOutputStream());
+             ObjectInputStream in = new ObjectInputStream(cliente.getInputStream())) {
+
+            // Recibir jugadores
             Jugador jugador1 = (Jugador) in.readObject();
             Jugador jugador2 = (Jugador) in.readObject();
-            
-            // Crear carrera
             carrera = new Carrera(jugador1, jugador2);
-            
-            // Enviar estado inicial al cliente
-            enviarEstadoJuego();
-            
-            // Procesar solicitudes del cliente
+
+            // Manejar solicitudes
             while (true) {
-                String solicitud = (String) in.readObject();
+                String comando = (String) in.readObject();
                 
-                if ("SIGUIENTE_TURNO".equals(solicitud)) {
-                    manejarSiguienteTurno();
-                } else if ("VERIFICAR_RESPUESTA".equals(solicitud)) {
-                    int respuesta = (int) in.readObject();
-                    manejarVerificarRespuesta(respuesta);
-                } else if ("SALIR".equals(solicitud)) {
-                    break;
+                switch (comando) {
+                    case "SOLICITAR_OPERACION":
+                        out.writeObject(carrera.generarOperacion());
+                        break;
+                        
+                    case "VERIFICAR_RESPUESTA":
+                        int respuesta = (int) in.readObject();
+                        Operacion operacion = (Operacion) in.readObject();
+                        boolean correcto = operacion.verificarResultado(respuesta);
+                        out.writeBoolean(correcto);
+                        break;
                 }
             }
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            System.err.println("Error con cliente: " + e.getMessage());
         }
     }
-    
-    private void manejarSiguienteTurno() {
-        try {
-            Jugador jugadorActual = carrera.getTurno();
-            
-            if (carrera.hayOperacion()) {
-                Operacion operacion = carrera.generarOperacion();
-                out.writeObject("OPERACION");
-                out.writeObject(operacion);
-            } else {
-                jugadorActual.sumarPuntos(10);
-                carrera.cambiarTurno();
-                enviarEstadoJuego();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-    
-    private void manejarVerificarRespuesta(int respuesta) {
-        try {
-            Jugador jugadorActual = carrera.getTurno();
-            Operacion operacion = (Operacion) in.readObject();
-            
-            int puntos = 10;
-            if (operacion.verificarResultado(respuesta)) {
-                puntos += 5;
-            }
-            
-            jugadorActual.sumarPuntos(puntos);
-            carrera.cambiarTurno();
-            enviarEstadoJuego();
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
-    
-    private void enviarEstadoJuego() throws IOException {
-        out.writeObject("ESTADO_JUEGO");
-        out.writeObject(carrera.getJugador1());
-        out.writeObject(carrera.getJugador2());
-        out.writeObject(carrera.getTurno());
-        out.writeObject(carrera.hayGanador() ? carrera.getGanador() : null);
-    }
-    
-    private void cerrar() {
-        try {
-            in.close();
-            out.close();
-            socketCliente.close();
-            servidorSocket.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-    
-    public static void main(String[] args) {
-        new Servidor();
-    }
-}    
+}

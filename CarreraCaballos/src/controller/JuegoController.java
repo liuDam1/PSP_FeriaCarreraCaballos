@@ -57,9 +57,11 @@ public class JuegoController {
                 mostrarOperacion(operacionActual);
                 operacionTriggered = true;
             } else {
+                resetOperacionUI();
+                mostrarMensaje("No hay operación este turno. Haz clic en Aceptar para continuar.");
                 operacionTriggered = false;
-                mostrarMensaje("No hay operación este turno");
-                toggleTurno();
+                // 确保显示当前回合玩家
+                etiquetaTurno.setText(currentPlayer.getNombre());
             }
 
             if (juego.hayGanador()) {
@@ -74,42 +76,42 @@ public class JuegoController {
 
     @FXML
     private void handleAceptar() {
-        if (!operacionTriggered) {
-            mostrarError("No hay operación en este turno");
+        if (operacionTriggered) {
+            try {
+                int respuesta = Integer.parseInt(campoRespuesta.getText());
+                boolean correcta = operacionActual.verificarResultado(respuesta);
+
+                if (correcta) {
+                    Jugador currentPlayer = juego.getTurno();
+                    currentPlayer.sumarPuntos(5);
+                    mostrarMensaje("¡Respuesta correcta! +5 puntos");
+                } else {
+                    mostrarMensaje("Respuesta incorrecta. Resultado correcto: " + operacionActual.getResultado());
+                }
+
+                actualizarPuntos(); // 更新分数显示
+            } catch (NumberFormatException e) {
+                mostrarError("Ingrese un número válido");
+                return;
+            }
+        }
+
+        // 统一处理回合切换（核心修复点）
+        toggleTurno(); // 触发随机切换回合（50%概率保持当前玩家）
+        resetOperacionUI(); // 清空题目显示
+        operacionTriggered = false; // 重置题目状态
+
+        if (juego.hayGanador()) {
+            mostrarGanador();
             return;
         }
 
-        try {
-            int respuesta = Integer.parseInt(campoRespuesta.getText());
-            boolean correcta = operacionActual.verificarResultado(respuesta);
-
-            if (correcta) {
-                Jugador currentPlayer = juego.getTurno();
-                currentPlayer.sumarPuntos(5);
-                mostrarMensaje("¡Respuesta correcta! +5 puntos");
-            } else {
-                mostrarMensaje("Respuesta incorrecta. Resultado correcto: " + operacionActual.getResultado());
-            }
-
-            actualizarPuntos();
-            toggleTurno();
-            operacionActual = null;
-            campoRespuesta.clear();
-
-            if (juego.hayGanador()) {
-                mostrarGanador();
-                return;
-            }
-
-            jugarTurno();
-        } catch (NumberFormatException e) {
-            mostrarError("Ingrese un número válido");
-        }
+        jugarTurno(); // 生成下一回合的基础分数
     }
 
     private void toggleTurno() {
-        juego.cambiarTurno();
-        etiquetaTurno.setText(juego.getTurno().getNombre());
+        juego.cambiarTurno(); // 模型层处理随机切换
+        etiquetaTurno.setText(juego.getTurno().getNombre()); // 更新UI
     }
 
     private void mostrarOperacion(Operacion op) {
@@ -117,6 +119,13 @@ public class JuegoController {
         numero2Operacion.setText(String.valueOf(op.getNum2()));
         operador.setText(String.valueOf(op.getOperador()));
         campoRespuesta.requestFocus();
+    }
+
+    private void resetOperacionUI() {
+        numero1Operacion.setText("0");
+        numero2Operacion.setText("0");
+        operador.setText("");
+        campoRespuesta.clear();
     }
 
     private void actualizarPuntos() {

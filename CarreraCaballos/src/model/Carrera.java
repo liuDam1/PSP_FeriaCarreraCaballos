@@ -7,6 +7,7 @@ public class Carrera {
     private Jugador jugador2;
     private Jugador turno;
     private Random random;
+    private static final int PUNTOS_OBJETIVO = 100;
 
     public Carrera(Jugador jugador1, Jugador jugador2) {
         this.jugador1 = jugador1;
@@ -28,14 +29,12 @@ public class Carrera {
     }
 
     public void cambiarTurno() {
-        // 50% de probabilidad de cambiar de jugador
         if (random.nextBoolean()) {
             turno = (turno == jugador1) ? jugador2 : jugador1;
         }
     }
 
     public int getPuntosRonda() {
-        // Puntos aleatorios entre 1 y 10
         return random.nextInt(10) + 1;
     }
 
@@ -65,14 +64,14 @@ public class Carrera {
     }
 
     public boolean hayGanador() {
-        return jugador1.getPuntos() >= 100 || jugador2.getPuntos() >= 100;
+        return jugador1.haLlegadoAPuntos(PUNTOS_OBJETIVO) || jugador2.haLlegadoAPuntos(PUNTOS_OBJETIVO);
     }
 
     public Jugador getGanador() {
-        if (jugador1.getPuntos() >= 100)
+        if (jugador1.haLlegadoAPuntos(PUNTOS_OBJETIVO))
             return jugador1;
-        if (jugador2.getPuntos() >= 100)
+        if (jugador2.haLlegadoAPuntos(PUNTOS_OBJETIVO))
             return jugador2;
         return null;
     }
-}
+}    

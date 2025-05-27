@@ -78,20 +78,10 @@
             <Font name="Arial" size="24.0" />
          </font>
       </Label>
-      <Label layoutX="313.0" layoutY="129.0" prefHeight="31.0" prefWidth="111.0" text="Jugador 2 :">
-         <font>
-            <Font name="Arial" size="22.0" />
-         </font>
-      </Label>
-      <Label layoutX="313.0" layoutY="89.0" prefHeight="31.0" prefWidth="111.0" text="Jugador 1 :">
-         <font>
-            <Font name="Arial" size="22.0" />
-         </font>
-      </Label>
       <Label fx:id="etiquetaTurno" layoutX="135.0" layoutY="108.0" prefHeight="31.0" prefWidth="149.0" textAlignment="CENTER">
          <font>
             <Font name="Arial Bold" size="24.0" />
          </font>
       </Label>
    </children>
-</AnchorPane>
+</AnchorPane>    

@@ -5,10 +5,10 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import model.Jugador;
+
 import java.io.IOException;
 
 public class InicioController {
@@ -24,7 +24,7 @@ public class InicioController {
         String nombre2 = campoNombreJugador2.getText().trim();
 
         if (nombre1.isEmpty() || nombre2.isEmpty()) {
-            Alert alert = new Alert(AlertType.ERROR);
+            Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
             alert.setHeaderText("Nombre(s) vacío(s)");
             alert.setContentText("Por favor, introduce el nombre de ambos jugadores.");
@@ -49,4 +49,4 @@ public class InicioController {
             e.printStackTrace();
         }
     }
-}
+}    

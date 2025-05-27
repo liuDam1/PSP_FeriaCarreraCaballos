@@ -3,3 +3,9 @@ Jugadores: jose vs liu
 Ganador: jose (104 puntos)
 Perdedor: liu (72 puntos)
 ----------------------------------------
+=== NUEVA PARTIDA ===
+Fecha: 28/05/2025 01:43:58
+Jugadores: sergui vs juan
+Ganador: juan (103 puntos)
+Perdedor: sergui (89 puntos)
+----------------------------------------

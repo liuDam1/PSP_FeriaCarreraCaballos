@@ -83,5 +83,20 @@
             <Font name="Arial Bold" size="24.0" />
          </font>
       </Label>
+      <Label layoutX="284.0" layoutY="89.0" text="Jugador 1 :">
+         <font>
+            <Font size="22.0" />
+         </font>
+      </Label>
+      <Label layoutX="284.0" layoutY="129.0" text="Jugador 2 :">
+         <font>
+            <Font size="22.0" />
+         </font>
+      </Label>
+      <Button fx:id="botonComenzar" layoutX="313.0" layoutY="244.0" mnemonicParsing="false" onAction="#handleComenzarJuego" prefHeight="60.0" prefWidth="206.0" text="Comenzar" visible="false">
+         <font>
+            <Font name="Arial Bold" size="28.0" />
+         </font>
+      </Button>
    </children>
-</AnchorPane>    
+</AnchorPane>

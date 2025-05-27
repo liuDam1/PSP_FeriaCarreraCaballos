@@ -106,6 +106,9 @@ public class JuegoController {
             // Cambiar el turno al siguiente jugador
             cambiarTurno();
 
+            // Limpiar la operación actual antes de verificar si hay un ganador
+            limpiarOperacion();
+
             // Verificar si hay un ganador
             if (jugador1.getPuntos() >= 100 || jugador2.getPuntos() >= 100) {
                 Jugador ganador = (jugador1.getPuntos() >= 100) ? jugador1 : jugador2;
@@ -180,6 +183,7 @@ public class JuegoController {
         numero2Operacion.setText("");
         operador.setText("");
         campoRespuesta.clear();
+        operacionActual = null;
     }
 
     /**

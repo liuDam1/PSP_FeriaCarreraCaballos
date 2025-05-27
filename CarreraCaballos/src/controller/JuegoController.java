@@ -3,12 +3,12 @@ package controller;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.text.Font;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import model.Carrera;
 import model.Jugador;
 import model.Operacion;
+import util.Persistencia;
 
 public class JuegoController {
     @FXML
@@ -86,6 +86,7 @@ public class JuegoController {
                 actualizarPuntuaciones();
                 
                 if (carrera.hayGanador()) {
+                    guardarHistorial();
                     mostrarMensajeGanador();
                     return;
                 }
@@ -122,6 +123,7 @@ public class JuegoController {
                 actualizarPuntuaciones();
                 
                 if (carrera.hayGanador()) {
+                    guardarHistorial();
                     mostrarMensajeGanador();
                     return;
                 }
@@ -132,6 +134,19 @@ public class JuegoController {
         }
     }
     
+    private void guardarHistorial() {
+        Jugador ganador = carrera.getGanador();
+        Jugador perdedor = (ganador == carrera.getJugador1()) ? carrera.getJugador2() : carrera.getJugador1();
+        
+        Persistencia.guardarPartida(
+            carrera.getJugador1().getNombre(),
+            carrera.getJugador2().getNombre(),
+            ganador.getNombre(),
+            ganador.getPuntos(),
+            perdedor.getPuntos()
+        );
+    }
+    
     private void mostrarMensajeGanador() {
         Jugador ganador = carrera.getGanador();
         
@@ -139,7 +154,8 @@ public class JuegoController {
         alert.setTitle("Fin del juego");
         alert.setHeaderText("¡Tenemos un ganador!");
         alert.setContentText("El jugador " + ganador.getNombre() + " ha ganado con " + 
-                             ganador.getPuntos() + " puntos.");
+                             ganador.getPuntos() + " puntos.\n\n" +
+                             "El resultado se ha guardado en el historial.");
         
         alert.showAndWait();
     }

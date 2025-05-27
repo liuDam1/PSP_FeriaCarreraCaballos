@@ -4,8 +4,13 @@
     // Para más información, visite: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
-        
-
+        {
+            "type": "java",
+            "name": "Servidor",
+            "request": "launch",
+            "mainClass": "server.Servidor",
+            "projectName": "CarreraCaballos_72c5d0d"
+        },
         {
             "type": "java",
             "name": "Current File",

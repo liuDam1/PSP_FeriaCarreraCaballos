@@ -10,6 +10,8 @@ import model.Jugador;
 
 public class Persistencia {
     private static final String ARCHIVO_HISTORIAL = "historial_carreras.txt";
+    private static final String FORMATO_FECHA = "dd/MM/yyyy HH:mm:ss";
+    private static final String ERROR_GUARDAR_HISTORIAL = "Error al guardar el historial: ";
 
     public static void guardarPartida(Jugador jugador1, Jugador jugador2, Jugador ganador) {
         int puntosPerdedor = (ganador == jugador1) ? jugador2.getPuntos() : jugador1.getPuntos();
@@ -22,7 +24,7 @@ public class Persistencia {
             int puntosPerdedor) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(ARCHIVO_HISTORIAL, true))) {
             LocalDateTime fecha = LocalDateTime.now();
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern(FORMATO_FECHA);
 
             writer.write("=== NUEVA PARTIDA ===");
             writer.newLine();
@@ -38,7 +40,7 @@ public class Persistencia {
             writer.write("----------------------------------------");
             writer.newLine();
         } catch (IOException e) {
-            System.err.println("Error al guardar el historial: " + e.getMessage());
+            System.err.println(ERROR_GUARDAR_HISTORIAL + e.getMessage());
         }
     }
 }

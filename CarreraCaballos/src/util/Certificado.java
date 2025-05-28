@@ -8,7 +8,13 @@ import java.time.format.DateTimeFormatter;
 import model.Jugador;
 
 public class Certificado {
+    // Constantes para archivo y formato
     private static final String CERTIFICADO_FILE = "certificado_ganador.md";
+    private static final String FORMATO_FECHA = "dd/MM/yyyy HH:mm:ss";
+
+    // Constantes para mensajes
+    private static final String MENSAJE_CERTIFICADO_GENERADO = "Certificado generado: ";
+    private static final String ERROR_GENERAR_CERTIFICADO = "Error al generar certificado: ";
 
     private static final String FORMATO = "# 🥇 Certificado de Victoria\n\n" +
             "**Fecha:** %s\n\n" +
@@ -31,23 +37,21 @@ public class Certificado {
             "```";
 
     public static void generarCertificado(Jugador ganador, Jugador jugador1, Jugador jugador2) {
-        try (FileWriter writer = new FileWriter(CERTIFICADO_FILE)) { // 单参数构造函数，默认覆盖模式
+        try (FileWriter writer = new FileWriter(CERTIFICADO_FILE)) {
             LocalDateTime fecha = LocalDateTime.now();
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern(FORMATO_FECHA);
 
             String certificado = String.format(FORMATO,
                     fecha.format(formatter),
                     ganador.getNombre(),
                     ganador.getPuntos(),
-                    jugador1.getNombre(),
-                    jugador1.getPuntos(),
-                    jugador2.getNombre(),
-                    jugador2.getPuntos());
+                    1, jugador1.getNombre(), jugador1.getPuntos(),
+                    2, jugador2.getNombre(), jugador2.getPuntos());
 
             writer.write(certificado);
-            System.out.println("Certificado generado: " + CERTIFICADO_FILE);
+            System.out.println(MENSAJE_CERTIFICADO_GENERADO + CERTIFICADO_FILE);
         } catch (IOException e) {
-            System.err.println("Error al generar certificado: " + e.getMessage());
+            System.err.println(ERROR_GENERAR_CERTIFICADO + e.getMessage());
         }
     }
 }

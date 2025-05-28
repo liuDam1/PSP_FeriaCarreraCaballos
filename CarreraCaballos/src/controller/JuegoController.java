@@ -15,6 +15,26 @@ import util.Persistencia;
 import java.io.IOException;
 
 public class JuegoController {
+    // Constantes para textos UI
+    private static final String TEXTO_CERO = "0";
+    private static final String TEXTO_VACIO = "";
+    private static final String FORMATO_PUNTOS_BASE = "%s obtiene %d puntos base";
+    private static final String MENSAJE_SIN_OPERACION = "No hay operación este turno. Haz clic en Aceptar para continuar.";
+    private static final String MENSAJE_RESPUESTA_CORRECTA = "¡Respuesta correcta! +5 puntos";
+    private static final String FORMATO_RESPUESTA_INCORRECTA = "Respuesta incorrecta. Resultado correcto: %d";
+    private static final String ERROR_NUMERO_INVALIDO = "Ingrese un número válido";
+    
+    // Constantes para mensajes de alerta
+    private static final String TITULO_ERROR = "Error";
+    private static final String TITULO_INFORMACION = "Información";
+    private static final String TITULO_VICTORIA = "¡Victoria!";
+    private static final String FORMATO_GANADOR = "%s gana con %d puntos!";
+    private static final String ERROR_CONEXION = "Error al conectar con el servidor: ";
+    private static final String ERROR_TURNO = "Error en el turno: ";
+    
+    // Constantes para puntos
+    private static final int PUNTOS_EXTRA = 5;
+
     @FXML private Label etiquetaJugador1, etiquetaJugador2;
     @FXML private Label etiquetaPuntos1, etiquetaPuntos2;
     @FXML private Label numero1Operacion, numero2Operacion, operador, etiquetaTurno, igual;
@@ -44,7 +64,7 @@ public class JuegoController {
             cliente.enviarJugadores(jugador1.getNombre(), jugador2.getNombre());
         } catch (IOException e) {
             e.printStackTrace();
-            mostrarError("Error al conectar con el servidor: " + e.getMessage());
+            mostrarError(ERROR_CONEXION + e.getMessage());
         }
     }
 
@@ -65,7 +85,7 @@ public class JuegoController {
             Jugador currentPlayer = juego.getTurno();
             int basePoints = juego.getPuntosRonda();
             currentPlayer.sumarPuntos(basePoints);
-            mostrarMensaje(currentPlayer.getNombre() + " obtiene " + basePoints + " puntos base");
+            mostrarMensaje(String.format(FORMATO_PUNTOS_BASE, currentPlayer.getNombre(), basePoints));
             actualizarPuntos();
 
             if (juego.hayOperacion()) {
@@ -74,7 +94,7 @@ public class JuegoController {
                 operacionTriggered = true;
             } else {
                 resetOperacionUI();
-                mostrarMensaje("No hay operación este turno. Haz clic en Aceptar para continuar.");
+                mostrarMensaje(MENSAJE_SIN_OPERACION);
                 operacionTriggered = false;
             }
 
@@ -84,7 +104,7 @@ public class JuegoController {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            mostrarError("Error en el turno: " + e.getMessage());
+            mostrarError(ERROR_TURNO + e.getMessage());
         }
     }
 
@@ -99,15 +119,15 @@ public class JuegoController {
 
                 if (correcta) {
                     Jugador currentPlayer = juego.getTurno();
-                    currentPlayer.sumarPuntos(5);
-                    mostrarMensaje("¡Respuesta correcta! +5 puntos");
+                    currentPlayer.sumarPuntos(PUNTOS_EXTRA);
+                    mostrarMensaje(MENSAJE_RESPUESTA_CORRECTA);
                 } else {
-                    mostrarMensaje("Respuesta incorrecta. Resultado correcto: " + operacionActual.getResultado());
+                    mostrarMensaje(String.format(FORMATO_RESPUESTA_INCORRECTA, operacionActual.getResultado()));
                 }
 
                 actualizarPuntos();
             } catch (NumberFormatException e) {
-                mostrarError("Ingrese un número válido");
+                mostrarError(ERROR_NUMERO_INVALIDO);
                 return;
             }
         }
@@ -137,9 +157,9 @@ public class JuegoController {
     }
 
     private void resetOperacionUI() {
-        numero1Operacion.setText("0");
-        numero2Operacion.setText("0");
-        operador.setText("");
+        numero1Operacion.setText(TEXTO_CERO);
+        numero2Operacion.setText(TEXTO_CERO);
+        operador.setText(TEXTO_VACIO);
         campoRespuesta.clear();
     }
 
@@ -173,9 +193,9 @@ public class JuegoController {
             Persistencia.guardarPartida(juego.getJugador1(), juego.getJugador2(), ganador);
             
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("¡Victoria!");
+            alert.setTitle(TITULO_VICTORIA);
             alert.setHeaderText(null);
-            alert.setContentText(ganador.getNombre() + " gana con " + ganador.getPuntos() + " puntos!");
+            alert.setContentText(String.format(FORMATO_GANADOR, ganador.getNombre(), ganador.getPuntos()));
             alert.showAndWait();
             
             cliente.cerrarConexion();
@@ -184,7 +204,7 @@ public class JuegoController {
 
     private void mostrarError(String msg) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Error");
+        alert.setTitle(TITULO_ERROR);
         alert.setHeaderText(null);
         alert.setContentText(msg);
         alert.showAndWait();
@@ -192,7 +212,7 @@ public class JuegoController {
 
     private void mostrarMensaje(String msg) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Información");
+        alert.setTitle(TITULO_INFORMACION);
         alert.setHeaderText(null);
         alert.setContentText(msg);
         alert.showAndWait();

@@ -39,3 +39,9 @@ Jugadores: jose vs angel
 Ganador: jose (103 puntos)
 Perdedor: angel (79 puntos)
 ----------------------------------------
+=== NUEVA PARTIDA ===
+Fecha: 28/05/2025 18:07:37
+Jugadores: q vs a
+Ganador: q (103 puntos)
+Perdedor: a (70 puntos)
+----------------------------------------

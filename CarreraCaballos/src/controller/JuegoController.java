@@ -1,5 +1,6 @@
 package controller;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -23,7 +24,7 @@ public class JuegoController {
     private static final String MENSAJE_RESPUESTA_CORRECTA = "¡Respuesta correcta! +5 puntos";
     private static final String FORMATO_RESPUESTA_INCORRECTA = "Respuesta incorrecta. Resultado correcto: %d";
     private static final String ERROR_NUMERO_INVALIDO = "Ingrese un número válido";
-    
+
     // Constantes para mensajes de alerta
     private static final String TITULO_ERROR = "Error";
     private static final String TITULO_INFORMACION = "Información";
@@ -31,16 +32,23 @@ public class JuegoController {
     private static final String FORMATO_GANADOR = "%s gana con %d puntos!";
     private static final String ERROR_CONEXION = "Error al conectar con el servidor: ";
     private static final String ERROR_TURNO = "Error en el turno: ";
-    
+    private static final String MENSAJE_DESPEDIDA = "Cerrando la aplicación...";
+
     // Constantes para puntos
     private static final int PUNTOS_EXTRA = 5;
 
-    @FXML private Label etiquetaJugador1, etiquetaJugador2;
-    @FXML private Label etiquetaPuntos1, etiquetaPuntos2;
-    @FXML private Label numero1Operacion, numero2Operacion, operador, etiquetaTurno, igual;
-    @FXML private TextField campoRespuesta;
-    @FXML private Button botonAceptar;
-    @FXML private Button botonComenzar;
+    @FXML
+    private Label etiquetaJugador1, etiquetaJugador2;
+    @FXML
+    private Label etiquetaPuntos1, etiquetaPuntos2;
+    @FXML
+    private Label numero1Operacion, numero2Operacion, operador, etiquetaTurno, igual;
+    @FXML
+    private TextField campoRespuesta;
+    @FXML
+    private Button botonAceptar;
+    @FXML
+    private Button botonComenzar;
 
     private Cliente cliente;
     private Carrera juego;
@@ -57,7 +65,7 @@ public class JuegoController {
             etiquetaJugador2.setText(jugador2.getNombre());
             actualizarPuntos();
             etiquetaTurno.setText(juego.getTurno().getNombre());
-            
+
             ocultarOperacionUI();
             botonComenzar.setVisible(true);
 
@@ -80,8 +88,9 @@ public class JuegoController {
 
     private void jugarTurno() {
         try {
-            if (!juegoIniciado) return;
-            
+            if (!juegoIniciado)
+                return;
+
             Jugador currentPlayer = juego.getTurno();
             int basePoints = juego.getPuntosRonda();
             currentPlayer.sumarPuntos(basePoints);
@@ -110,8 +119,9 @@ public class JuegoController {
 
     @FXML
     private void Aceptar() {
-        if (!juegoIniciado) return;
-        
+        if (!juegoIniciado)
+            return;
+
         if (operacionIniciada) {
             try {
                 int respuesta = Integer.parseInt(campoRespuesta.getText());
@@ -189,16 +199,42 @@ public class JuegoController {
     private void mostrarGanador() {
         Jugador ganador = juego.getGanador();
         if (ganador != null) {
-            Certificado.generarCertificado(ganador, juego.getJugador1(), juego.getJugador2());
-            Persistencia.guardarPartida(juego.getJugador1(), juego.getJugador2(), ganador);
-            
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle(TITULO_VICTORIA);
-            alert.setHeaderText(null);
-            alert.setContentText(String.format(FORMATO_GANADOR, ganador.getNombre(), ganador.getPuntos()));
-            alert.showAndWait();
-            
-            cliente.cerrarConexion();
+            try {
+                Certificado.generarCertificado(ganador, juego.getJugador1(), juego.getJugador2());
+                Persistencia.guardarPartida(juego.getJugador1(), juego.getJugador2(), ganador);
+
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle(TITULO_VICTORIA);
+                alert.setHeaderText(null);
+                alert.setContentText(String.format(FORMATO_GANADOR, ganador.getNombre(), ganador.getPuntos()));
+                alert.showAndWait();
+
+                if (cliente != null) {
+                    cliente.cerrarConexion();
+                }
+
+                System.out.println(MENSAJE_DESPEDIDA);
+
+                Thread shutdownThread = new Thread(() -> {
+                    try {
+                        Thread.sleep(3000);
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                        System.err.println("Hilo de cierre interrumpido: " + e.getMessage());
+                    } finally {
+                        Platform.exit();
+                        System.exit(0);
+                    }
+                });
+
+                shutdownThread.setDaemon(true); 
+                shutdownThread.start();
+
+            } catch (Exception e) {
+                System.err.println("Error al finalizar el juego: " + e.getMessage());
+                Platform.exit();
+                System.exit(1); 
+            }
         }
     }
 

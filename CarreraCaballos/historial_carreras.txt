@@ -9,3 +9,9 @@ Jugadores: sergui vs juan
 Ganador: juan (103 puntos)
 Perdedor: sergui (89 puntos)
 ----------------------------------------
+=== NUEVA PARTIDA ===
+Fecha: 28/05/2025 02:40:27
+Jugadores: Alex vs Pablo
+Ganador: Pablo (106 puntos)
+Perdedor: Alex (45 puntos)
+----------------------------------------

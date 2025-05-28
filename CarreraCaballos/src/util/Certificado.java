@@ -7,7 +7,7 @@ import java.time.format.DateTimeFormatter;
 
 import model.Jugador;
 
-public class CertificadoGenerator {
+public class Certificado {
     private static final String CERTIFICADO_FILE = "certificado_ganador.md";
 
     private static final String FORMATO = "# 🥇 Certificado de Victoria\n\n" +

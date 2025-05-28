@@ -13,12 +13,13 @@ public class Persistencia {
 
     public static void guardarPartida(Jugador jugador1, Jugador jugador2, Jugador ganador) {
         int puntosPerdedor = (ganador == jugador1) ? jugador2.getPuntos() : jugador1.getPuntos();
-        
-        guardarPartida(jugador1.getNombre(), jugador2.getNombre(), 
-                      ganador.getNombre(), ganador.getPuntos(), puntosPerdedor);
+
+        guardarPartida(jugador1.getNombre(), jugador2.getNombre(),
+                ganador.getNombre(), ganador.getPuntos(), puntosPerdedor);
     }
 
-    public static void guardarPartida(String jugador1, String jugador2, String ganador, int puntosGanador, int puntosPerdedor) {
+    public static void guardarPartida(String jugador1, String jugador2, String ganador, int puntosGanador,
+            int puntosPerdedor) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(ARCHIVO_HISTORIAL, true))) {
             LocalDateTime fecha = LocalDateTime.now();
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
@@ -31,7 +32,8 @@ public class Persistencia {
             writer.newLine();
             writer.write("Ganador: " + ganador + " (" + puntosGanador + " puntos)");
             writer.newLine();
-            writer.write("Perdedor: " + (ganador.equals(jugador1) ? jugador2 : jugador1) + " (" + puntosPerdedor + " puntos)");
+            writer.write("Perdedor: " + (ganador.equals(jugador1) ? jugador2 : jugador1) + " (" + puntosPerdedor
+                    + " puntos)");
             writer.newLine();
             writer.write("----------------------------------------");
             writer.newLine();

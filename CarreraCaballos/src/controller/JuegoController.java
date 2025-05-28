@@ -9,7 +9,7 @@ import client.Cliente;
 import model.Carrera;
 import model.Jugador;
 import model.Operacion;
-import util.CertificadoGenerator;
+import util.Certificado;
 import util.Persistencia;
 
 import java.io.IOException;
@@ -20,26 +20,24 @@ public class JuegoController {
     @FXML private Label numero1Operacion, numero2Operacion, operador, etiquetaTurno, igual;
     @FXML private TextField campoRespuesta;
     @FXML private Button botonAceptar;
-    @FXML private Button botonComenzar; // 新增：开始游戏按钮
+    @FXML private Button botonComenzar;
 
     private Cliente cliente;
     private Carrera juego;
     private Operacion operacionActual;
     private boolean operacionTriggered = false;
-    private boolean isGameStarted = false; // 新增：游戏是否已开始
+    private boolean isGameStarted = false;
 
     public void initData(Jugador jugador1, Jugador jugador2) {
         try {
             this.cliente = new Cliente();
             this.juego = new Carrera(jugador1, jugador2);
 
-            // 初始化UI但不开始游戏
             etiquetaJugador1.setText(jugador1.getNombre());
             etiquetaJugador2.setText(jugador2.getNombre());
             actualizarPuntos();
             etiquetaTurno.setText(juego.getTurno().getNombre());
             
-            // 隐藏题目区域，显示开始按钮
             ocultarOperacionUI();
             botonComenzar.setVisible(true);
 
@@ -50,7 +48,6 @@ public class JuegoController {
         }
     }
 
-    // 新增：开始游戏按钮的点击事件
     @FXML
     private void handleComenzarJuego() {
         if (!isGameStarted) {
@@ -63,7 +60,7 @@ public class JuegoController {
 
     private void jugarTurno() {
         try {
-            if (!isGameStarted) return; // 确保游戏已开始
+            if (!isGameStarted) return;
             
             Jugador currentPlayer = juego.getTurno();
             int basePoints = juego.getPuntosRonda();
@@ -81,7 +78,6 @@ public class JuegoController {
                 operacionTriggered = false;
             }
 
-            // 每回合结束后检查是否有玩家达到100分
             if (juego.hayGanador()) {
                 mostrarGanador();
                 return;
@@ -94,7 +90,7 @@ public class JuegoController {
 
     @FXML
     private void handleAceptar() {
-        if (!isGameStarted) return; // 确保游戏已开始
+        if (!isGameStarted) return;
         
         if (operacionTriggered) {
             try {
@@ -173,8 +169,7 @@ public class JuegoController {
     private void mostrarGanador() {
         Jugador ganador = juego.getGanador();
         if (ganador != null) {
-            // 生成证书和记录对局
-            CertificadoGenerator.generarCertificado(ganador, juego.getJugador1(), juego.getJugador2());
+            Certificado.generarCertificado(ganador, juego.getJugador1(), juego.getJugador2());
             Persistencia.guardarPartida(juego.getJugador1(), juego.getJugador2(), ganador);
             
             Alert alert = new Alert(Alert.AlertType.INFORMATION);

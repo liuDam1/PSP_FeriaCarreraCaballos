@@ -68,7 +68,7 @@
             <Font name="Arial" size="48.0" />
          </font>
       </TextField>
-      <Button fx:id="botonAceptar" layoutX="313.0" layoutY="349.0" mnemonicParsing="false" onAction="#handleAceptar" prefHeight="60.0" prefWidth="206.0" text="Aceptar">
+      <Button fx:id="botonAceptar" layoutX="313.0" layoutY="349.0" mnemonicParsing="false" onAction="#Aceptar" prefHeight="60.0" prefWidth="206.0" text="Aceptar">
          <font>
             <Font name="Arial Bold" size="28.0" />
          </font>
@@ -93,7 +93,7 @@
             <Font size="22.0" />
          </font>
       </Label>
-      <Button fx:id="botonComenzar" layoutX="313.0" layoutY="244.0" mnemonicParsing="false" onAction="#handleComenzarJuego" prefHeight="60.0" prefWidth="206.0" text="Comenzar" visible="false">
+      <Button fx:id="botonComenzar" layoutX="313.0" layoutY="244.0" mnemonicParsing="false" onAction="#ComenzarJuego" prefHeight="60.0" prefWidth="206.0" text="Comenzar" visible="false">
          <font>
             <Font name="Arial Bold" size="28.0" />
          </font>

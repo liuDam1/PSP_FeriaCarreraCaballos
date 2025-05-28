@@ -31,7 +31,7 @@ public class InicioController {
     private TextField campoNombreJugador2;
 
     @FXML
-    private void handleAceptar() {
+    private void Aceptar() {
         String nombre1 = campoNombreJugador1.getText().trim();
         String nombre2 = campoNombreJugador2.getText().trim();
 

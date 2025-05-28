@@ -33,7 +33,7 @@
             <Font size="18.0" />
          </font>
       </TextField>
-      <Button fx:id="botonAceptar" layoutX="304.0" layoutY="333.0" mnemonicParsing="false" prefHeight="46.0" prefWidth="223.0" text="Aceptar" onAction="#handleAceptar">
+      <Button fx:id="botonAceptar" layoutX="304.0" layoutY="333.0" mnemonicParsing="false" prefHeight="46.0" prefWidth="223.0" text="Aceptar" onAction="#Aceptar">
          <font>
             <Font size="21.0" />
          </font>

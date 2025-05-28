@@ -45,8 +45,8 @@ public class JuegoController {
     private Cliente cliente;
     private Carrera juego;
     private Operacion operacionActual;
-    private boolean operacionTriggered = false;
-    private boolean isGameStarted = false;
+    private boolean operacionIniciada = false;
+    private boolean juegoIniciado = false;
 
     public void initData(Jugador jugador1, Jugador jugador2) {
         try {
@@ -69,9 +69,9 @@ public class JuegoController {
     }
 
     @FXML
-    private void handleComenzarJuego() {
-        if (!isGameStarted) {
-            isGameStarted = true;
+    private void ComenzarJuego() {
+        if (!juegoIniciado) {
+            juegoIniciado = true;
             botonComenzar.setVisible(false);
             mostrarOperacionUI();
             jugarTurno();
@@ -80,7 +80,7 @@ public class JuegoController {
 
     private void jugarTurno() {
         try {
-            if (!isGameStarted) return;
+            if (!juegoIniciado) return;
             
             Jugador currentPlayer = juego.getTurno();
             int basePoints = juego.getPuntosRonda();
@@ -91,11 +91,11 @@ public class JuegoController {
             if (juego.hayOperacion()) {
                 operacionActual = juego.generarOperacion();
                 mostrarOperacion(operacionActual);
-                operacionTriggered = true;
+                operacionIniciada = true;
             } else {
-                resetOperacionUI();
+                resetearOperacionUI();
                 mostrarMensaje(MENSAJE_SIN_OPERACION);
-                operacionTriggered = false;
+                operacionIniciada = false;
             }
 
             if (juego.hayGanador()) {
@@ -109,10 +109,10 @@ public class JuegoController {
     }
 
     @FXML
-    private void handleAceptar() {
-        if (!isGameStarted) return;
+    private void Aceptar() {
+        if (!juegoIniciado) return;
         
-        if (operacionTriggered) {
+        if (operacionIniciada) {
             try {
                 int respuesta = Integer.parseInt(campoRespuesta.getText());
                 boolean correcta = operacionActual.verificarResultado(respuesta);
@@ -132,9 +132,9 @@ public class JuegoController {
             }
         }
 
-        toggleTurno();
-        resetOperacionUI();
-        operacionTriggered = false;
+        cambiarTurno();
+        resetearOperacionUI();
+        operacionIniciada = false;
 
         if (juego.hayGanador()) {
             mostrarGanador();
@@ -144,7 +144,7 @@ public class JuegoController {
         jugarTurno();
     }
 
-    private void toggleTurno() {
+    private void cambiarTurno() {
         juego.cambiarTurno();
         etiquetaTurno.setText(juego.getTurno().getNombre());
     }
@@ -156,7 +156,7 @@ public class JuegoController {
         campoRespuesta.requestFocus();
     }
 
-    private void resetOperacionUI() {
+    private void resetearOperacionUI() {
         numero1Operacion.setText(TEXTO_CERO);
         numero2Operacion.setText(TEXTO_CERO);
         operador.setText(TEXTO_VACIO);

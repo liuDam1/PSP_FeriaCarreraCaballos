@@ -1,4 +1,4 @@
-package test.es.etg.psp;
+package test.es.etg.psp.model;
 
 import org.junit.jupiter.api.Test;
 import es.etg.psp.model.Jugador;

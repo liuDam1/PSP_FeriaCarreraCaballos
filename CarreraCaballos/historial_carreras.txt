@@ -15,3 +15,27 @@ Jugadores: Alex vs Pablo
 Ganador: Pablo (106 puntos)
 Perdedor: Alex (45 puntos)
 ----------------------------------------
+=== NUEVA PARTIDA ===
+Fecha: 28/05/2025 16:25:39
+Jugadores: Alfonso vs Joselu
+Ganador: Alfonso (106 puntos)
+Perdedor: Joselu (93 puntos)
+----------------------------------------
+=== NUEVA PARTIDA ===
+Fecha: 28/05/2025 16:31:20
+Jugadores: jiang vs pepe
+Ganador: pepe (100 puntos)
+Perdedor: jiang (71 puntos)
+----------------------------------------
+=== NUEVA PARTIDA ===
+Fecha: 28/05/2025 16:31:22
+Jugadores: jiang vs pepe
+Ganador: pepe (100 puntos)
+Perdedor: jiang (71 puntos)
+----------------------------------------
+=== NUEVA PARTIDA ===
+Fecha: 28/05/2025 16:43:09
+Jugadores: jose vs angel
+Ganador: jose (103 puntos)
+Perdedor: angel (79 puntos)
+----------------------------------------

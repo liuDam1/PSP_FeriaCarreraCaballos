@@ -1,8 +1,5 @@
 package es.etg.psp.util;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -11,14 +8,15 @@ public class GestionLog {
     private static final DateTimeFormatter FORMATO_FECHA = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss.SSS");
 
     public static void registrar(TipoLog tipo, String mensaje) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(ARCHIVO_LOG, true))) {
+        try (java.io.BufferedWriter writer = new java.io.BufferedWriter(
+                new java.io.FileWriter(ARCHIVO_LOG, true))) {
             String nivel = obtenerNivelLog(tipo);
             String entrada = String.format("[%s] [%s] %s%n",
                     FORMATO_FECHA.format(LocalDateTime.now()),
                     nivel,
                     mensaje);
             writer.write(entrada);
-        } catch (IOException e) {
+        } catch (java.io.IOException e) {
             System.err.println("Error al registrar en el log: " + e.getMessage());
         }
     }

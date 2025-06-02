@@ -13,30 +13,20 @@
             <Font size="30.0" />
          </font>
       </Label>
-      <Label id="labelJG1" layoutX="201.0" layoutY="182.0" prefHeight="31.0" prefWidth="192.0" text="Nombre Jugador 1 :">
+      <Label id="labelJG1" layoutX="201.0" layoutY="208.0" prefHeight="31.0" prefWidth="192.0" text="Nombre Jugador  :">
          <font>
             <Font size="21.0" />
          </font>
       </Label>
-      <Label id="labelJG2" layoutX="201.0" layoutY="233.0" prefHeight="31.0" prefWidth="192.0" text="Nombre Jugador 2 :">
-         <font>
-            <Font size="21.0" />
-         </font>
-      </Label>
-      <TextField fx:id="campoNombreJugador1" layoutX="406.0" layoutY="178.0">
+      <TextField fx:id="campoNombreJugador1" layoutX="406.0" layoutY="204.0">
          <font>
             <Font size="18.0" />
          </font>
       </TextField>
-      <TextField fx:id="campoNombreJugador2" layoutX="406.0" layoutY="229.0">
-         <font>
-            <Font size="18.0" />
-         </font>
-      </TextField>
-      <Button fx:id="botonAceptar" layoutX="304.0" layoutY="333.0" mnemonicParsing="false" prefHeight="46.0" prefWidth="223.0" text="Aceptar" onAction="#Aceptar">
+      <Button fx:id="botonAceptar" layoutX="304.0" layoutY="333.0" mnemonicParsing="false" onAction="#Aceptar" prefHeight="46.0" prefWidth="223.0" text="Aceptar">
          <font>
             <Font size="21.0" />
          </font>
       </Button>
    </children>
-</Pane>    
+</Pane>

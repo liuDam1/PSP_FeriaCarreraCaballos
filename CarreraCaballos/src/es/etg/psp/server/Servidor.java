@@ -8,6 +8,8 @@ import java.net.Socket;
 import java.util.Random;
 
 import es.etg.psp.model.Operacion;
+import es.etg.psp.util.GestionLog;
+import es.etg.psp.util.TipoLog;
 
 public class Servidor {
     // Constantes de configuración
@@ -18,18 +20,23 @@ public class Servidor {
     private static final String MENSAJE_INICIO_SERVIDOR = "Servidor iniciado en puerto ";
     private static final String MENSAJE_CLIENTE_CONECTADO = "Cliente conectado desde ";
     private static final String MENSAJE_JUGADORES_RECIBIDOS = "Jugadores recibidos: ";
-    private static final String MENSAJE_ACCION_NO_RECONOCIDA = "Servidor: Acción no reconocida - ";
-    private static final String MENSAJE_ERROR_MANEJO_CLIENTE = "Servidor: Error al manejar cliente: ";
-    private static final String MENSAJE_CONEXION_CERRADA = "Servidor: Conexión con cliente cerrada";
-    private static final String MENSAJE_ERROR_INICIO_SERVIDOR = "Servidor: Error al iniciar servidor: ";
+    private static final String MENSAJE_ACCION_NO_RECONOCIDA = "Acción no reconocida - ";
+    private static final String MENSAJE_ERROR_MANEJO_CLIENTE = "Error al manejar cliente: ";
+    private static final String MENSAJE_CONEXION_CERRADA = "Conexión con cliente cerrada";
+    private static final String MENSAJE_ERROR_INICIO_SERVIDOR = "Error al iniciar servidor: ";
+    private static final String MENSAJE_HILO_CLIENTE_INICIADO = "Hilo para cliente iniciado";
+    private static final String ERROR_CERRAR_SOCKET = "Error al cerrar socket: ";
+    private static final String SEPARADOR_JUGADORES = " y ";
 
     // Constantes para operaciones
     private static final String SOLICITUD_OPERACION = "SOLICITAR_OPERACION";
     private static final String VERIFICACION_RESPUESTA = "VERIFICAR_RESPUESTA";
-    private static final String FORMATO_OPERACION_ENVIADA = "Servidor: Enviada operación - %d %c %d";
-    private static final String FORMATO_RESPUESTA_VERIFICADA = "Servidor: Respuesta %s";
+    private static final String FORMATO_OPERACION_ENVIADA = "Enviada operación - %d %c %d";
+    private static final String FORMATO_RESPUESTA_VERIFICADA = "Respuesta %s";
     private static final String TEXTO_CORRECTA = "correcta";
     private static final String TEXTO_INCORRECTA = "incorrecta";
+    private static final String DEBUG_OPERACION_GENERADA = "Operación generada: %s";
+    private static final String DEBUG_RESPUESTA_RECIBIDA = "Respuesta recibida: %d, Operación: %s, Resultado esperado: %d";
 
     // Constantes para generación de operaciones
     private static final int RANGO_NUM1 = 100;
@@ -39,20 +46,24 @@ public class Servidor {
 
     public void iniciar() {
         try (ServerSocket serverSocket = new ServerSocket(PUERTO)) {
-            System.out.println(MENSAJE_INICIO_SERVIDOR + PUERTO);
+            GestionLog.registrar(TipoLog.INFO, MENSAJE_INICIO_SERVIDOR + PUERTO);
 
             while (true) {
                 Socket socketCliente = serverSocket.accept();
-                System.out.println(MENSAJE_CLIENTE_CONECTADO + socketCliente.getInetAddress());
+                String clienteInfo = socketCliente.getInetAddress().toString();
+                GestionLog.registrar(TipoLog.INFO, MENSAJE_CLIENTE_CONECTADO + clienteInfo);
 
                 new Thread(() -> {
+                    GestionLog.registrar(TipoLog.DEBUG, MENSAJE_HILO_CLIENTE_INICIADO);
+
                     try (
                             ObjectOutputStream out = new ObjectOutputStream(socketCliente.getOutputStream());
                             ObjectInputStream in = new ObjectInputStream(socketCliente.getInputStream())) {
 
                         String jugador1 = (String) in.readObject();
                         String jugador2 = (String) in.readObject();
-                        System.out.println(MENSAJE_JUGADORES_RECIBIDOS + jugador1 + " y " + jugador2);
+                        GestionLog.registrar(TipoLog.INFO,
+                                MENSAJE_JUGADORES_RECIBIDOS + jugador1 + SEPARADOR_JUGADORES + jugador2);
 
                         String accion;
                         while ((accion = (String) in.readObject()) != null) {
@@ -61,10 +72,13 @@ public class Servidor {
                                     Operacion operacion = generarOperacion();
                                     out.writeObject(operacion);
                                     out.flush();
-                                    System.out.println(String.format(FORMATO_OPERACION_ENVIADA,
-                                            operacion.getNum1(),
-                                            operacion.getOperador(),
-                                            operacion.getNum2()));
+                                    GestionLog.registrar(TipoLog.INFO,
+                                            String.format(FORMATO_OPERACION_ENVIADA,
+                                                    operacion.getNum1(),
+                                                    operacion.getOperador(),
+                                                    operacion.getNum2()));
+                                    GestionLog.registrar(TipoLog.DEBUG,
+                                            String.format(DEBUG_OPERACION_GENERADA, operacion));
                                     break;
 
                                 case VERIFICACION_RESPUESTA:
@@ -73,29 +87,34 @@ public class Servidor {
                                     boolean esCorrecta = verificarRespuesta(respuesta, op);
                                     out.writeObject(esCorrecta);
                                     out.flush();
-                                    System.out.println(String.format(FORMATO_RESPUESTA_VERIFICADA,
-                                            esCorrecta ? TEXTO_CORRECTA : TEXTO_INCORRECTA));
+                                    GestionLog.registrar(TipoLog.INFO,
+                                            String.format(FORMATO_RESPUESTA_VERIFICADA,
+                                                    esCorrecta ? TEXTO_CORRECTA : TEXTO_INCORRECTA));
+                                    GestionLog.registrar(TipoLog.DEBUG,
+                                            String.format(DEBUG_RESPUESTA_RECIBIDA,
+                                                    respuesta,
+                                                    op,
+                                                    calcularResultado(op)));
                                     break;
 
                                 default:
-                                    System.out.println(MENSAJE_ACCION_NO_RECONOCIDA + accion);
+                                    GestionLog.registrar(TipoLog.WARN, MENSAJE_ACCION_NO_RECONOCIDA + accion);
                             }
                         }
                     } catch (IOException | ClassNotFoundException e) {
-                        System.err.println(MENSAJE_ERROR_MANEJO_CLIENTE + e.getMessage());
+                        GestionLog.registrar(TipoLog.ERROR, MENSAJE_ERROR_MANEJO_CLIENTE + e.getMessage());
                     } finally {
                         try {
                             socketCliente.close();
-                            System.out.println(MENSAJE_CONEXION_CERRADA);
+                            GestionLog.registrar(TipoLog.INFO, MENSAJE_CONEXION_CERRADA);
                         } catch (IOException e) {
-                            e.printStackTrace();
+                            GestionLog.registrar(TipoLog.ERROR, ERROR_CERRAR_SOCKET + e.getMessage());
                         }
                     }
                 }).start();
             }
         } catch (IOException e) {
-            System.err.println(MENSAJE_ERROR_INICIO_SERVIDOR + e.getMessage());
-            e.printStackTrace();
+            GestionLog.registrar(TipoLog.ERROR, MENSAJE_ERROR_INICIO_SERVIDOR + e.getMessage());
         }
     }
 
@@ -114,24 +133,22 @@ public class Servidor {
     }
 
     private boolean verificarRespuesta(int respuesta, Operacion operacion) {
-        int resultado;
+        return respuesta == calcularResultado(operacion);
+    }
+
+    private int calcularResultado(Operacion operacion) {
         switch (operacion.getOperador()) {
             case '+':
-                resultado = operacion.getNum1() + operacion.getNum2();
-                break;
+                return operacion.getNum1() + operacion.getNum2();
             case '-':
-                resultado = operacion.getNum1() - operacion.getNum2();
-                break;
+                return operacion.getNum1() - operacion.getNum2();
             case '*':
-                resultado = operacion.getNum1() * operacion.getNum2();
-                break;
+                return operacion.getNum1() * operacion.getNum2();
             case '/':
-                resultado = operacion.getNum1() / operacion.getNum2();
-                break;
+                return operacion.getNum1() / operacion.getNum2();
             default:
-                return false;
+                return 0;
         }
-        return respuesta == resultado;
     }
 
     public static void main(String[] args) {

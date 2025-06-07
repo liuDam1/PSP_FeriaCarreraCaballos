@@ -13,12 +13,22 @@
             <Font size="30.0" />
          </font>
       </Label>
-      <Label id="labelJG1" layoutX="201.0" layoutY="208.0" prefHeight="31.0" prefWidth="192.0" text="Nombre Jugador  :">
+      <Label id="labelJG1" layoutX="201.0" layoutY="184.0" prefHeight="31.0" prefWidth="192.0" text="Nombre Jugador 1 :">
          <font>
             <Font size="21.0" />
          </font>
       </Label>
-      <TextField fx:id="campoNombreJugador1" layoutX="406.0" layoutY="204.0">
+      <Label id="labelJG2" layoutX="201.0" layoutY="233.0" prefHeight="31.0" prefWidth="192.0" text="Nombre Jugador 2 :">
+         <font>
+            <Font size="21.0" />
+         </font>
+      </Label>
+      <TextField fx:id="campoNombreJugador1" layoutX="406.0" layoutY="180.0">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </TextField>
+      <TextField fx:id="campoNombreJugador2" layoutX="406.0" layoutY="229.0">
          <font>
             <Font size="18.0" />
          </font>

@@ -14,7 +14,9 @@ import es.etg.psp.model.Carrera;
 import es.etg.psp.model.Jugador;
 import es.etg.psp.model.Operacion;
 import es.etg.psp.util.Certificado;
+import es.etg.psp.util.GestionLog;
 import es.etg.psp.util.Persistencia;
+import es.etg.psp.util.TipoLog;
 
 public class JuegoController {
     // Constantes para textos UI
@@ -25,8 +27,9 @@ public class JuegoController {
     private static final String MENSAJE_RESPUESTA_CORRECTA = "¡Respuesta correcta! +5 puntos";
     private static final String FORMATO_RESPUESTA_INCORRECTA = "Respuesta incorrecta. Resultado correcto: %d";
     private static final String ERROR_NUMERO_INVALIDO = "Ingrese un número válido";
+    private static final String SEPARADOR_JUGADORES = " vs ";
 
-    // Constantes para mensajes de alerta
+    // Constantes para mensajes de log
     private static final String TITULO_ERROR = "Error";
     private static final String TITULO_INFORMACION = "Información";
     private static final String TITULO_VICTORIA = "¡Victoria!";
@@ -36,9 +39,21 @@ public class JuegoController {
     private static final String MENSAJE_DESPEDIDA = "Cerrando la aplicación...";
     private static final String ERROR_FINALIZAR_JUEGO = "Error al finalizar el juego: ";
     private static final String HILO_CIERRE_INTERRUMPIDO = "Hilo de cierre interrumpido: ";
+    private static final String INICIO_JUEGO = "Iniciando juego con jugadores: ";
+    private static final String TURNO_INICIADO = "Turno iniciado para: ";
+    private static final String OPERACION_GENERADA = "Operación generada: ";
+    private static final String RESPUESTA_RECIBIDA = "Respuesta recibida: ";
+    private static final String RESPUESTA_VERIFICADA = "Respuesta verificada - Correcta: ";
+    private static final String CAMBIO_TURNO = "Cambiando turno a: ";
+    private static final String GANADOR_DETECTADO = "Ganador detectado: ";
+    private static final String CERTIFICADO_GENERADO = "Certificado generado para ganador: ";
+    private static final String PARTIDA_GUARDADA = "Partida guardada en historial";
+    private static final String LOG_JUEGO_INICIADO = "Juego iniciado";
+    private static final String LOG_TURNO_SIN_OPERACION = "Turno sin operación";
 
     // Constantes para puntos
     private static final int PUNTOS_EXTRA = 5;
+    private static final int TIEMPO_ESPERA_CIERRE = 3000;
 
     @FXML
     private Label etiquetaJugador1, etiquetaJugador2;
@@ -61,6 +76,9 @@ public class JuegoController {
 
     public void initData(Jugador jugador1, Jugador jugador2) {
         try {
+            GestionLog.registrar(TipoLog.INFO,
+                    INICIO_JUEGO + jugador1.getNombre() + SEPARADOR_JUGADORES + jugador2.getNombre());
+
             this.cliente = new Cliente();
             this.juego = new Carrera(jugador1, jugador2);
 
@@ -74,7 +92,7 @@ public class JuegoController {
 
             cliente.enviarJugadores(jugador1.getNombre(), jugador2.getNombre());
         } catch (IOException e) {
-            e.printStackTrace();
+            GestionLog.registrar(TipoLog.ERROR, ERROR_CONEXION + e.getMessage());
             mostrarError(ERROR_CONEXION + e.getMessage());
         }
     }
@@ -85,6 +103,7 @@ public class JuegoController {
             juegoIniciado = true;
             botonComenzar.setVisible(false);
             mostrarOperacionUI();
+            GestionLog.registrar(TipoLog.INFO, LOG_JUEGO_INICIADO);
             jugarTurno();
         }
     }
@@ -95,6 +114,8 @@ public class JuegoController {
                 return;
 
             Jugador currentPlayer = juego.getTurno();
+            GestionLog.registrar(TipoLog.INFO, TURNO_INICIADO + currentPlayer.getNombre());
+
             int basePoints = juego.getPuntosRonda();
             currentPlayer.sumarPuntos(basePoints);
             mostrarMensaje(String.format(FORMATO_PUNTOS_BASE, currentPlayer.getNombre(), basePoints));
@@ -104,10 +125,12 @@ public class JuegoController {
                 operacionActual = juego.generarOperacion();
                 mostrarOperacion(operacionActual);
                 operacionIniciada = true;
+                GestionLog.registrar(TipoLog.INFO, OPERACION_GENERADA + operacionActual);
             } else {
                 resetearOperacionUI();
                 mostrarMensaje(MENSAJE_SIN_OPERACION);
                 operacionIniciada = false;
+                GestionLog.registrar(TipoLog.INFO, LOG_TURNO_SIN_OPERACION);
             }
 
             if (juego.hayGanador()) {
@@ -115,7 +138,7 @@ public class JuegoController {
                 return;
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            GestionLog.registrar(TipoLog.ERROR, ERROR_TURNO + e.getMessage());
             mostrarError(ERROR_TURNO + e.getMessage());
         }
     }
@@ -128,7 +151,10 @@ public class JuegoController {
         if (operacionIniciada) {
             try {
                 int respuesta = Integer.parseInt(campoRespuesta.getText());
+                GestionLog.registrar(TipoLog.INFO, RESPUESTA_RECIBIDA + respuesta);
+
                 boolean correcta = operacionActual.verificarResultado(respuesta);
+                GestionLog.registrar(TipoLog.INFO, RESPUESTA_VERIFICADA + correcta);
 
                 if (correcta) {
                     Jugador currentPlayer = juego.getTurno();
@@ -140,6 +166,7 @@ public class JuegoController {
 
                 actualizarPuntos();
             } catch (NumberFormatException e) {
+                GestionLog.registrar(TipoLog.WARN, ERROR_NUMERO_INVALIDO);
                 mostrarError(ERROR_NUMERO_INVALIDO);
                 return;
             }
@@ -160,6 +187,7 @@ public class JuegoController {
     private void cambiarTurno() {
         juego.cambiarTurno();
         etiquetaTurno.setText(juego.getTurno().getNombre());
+        GestionLog.registrar(TipoLog.INFO, CAMBIO_TURNO + juego.getTurno().getNombre());
     }
 
     private void mostrarOperacion(Operacion op) {
@@ -203,8 +231,13 @@ public class JuegoController {
         Jugador ganador = juego.getGanador();
         if (ganador != null) {
             try {
+                GestionLog.registrar(TipoLog.INFO, GANADOR_DETECTADO + ganador.getNombre());
+
                 Certificado.generarCertificado(ganador, juego.getJugador1(), juego.getJugador2());
+                GestionLog.registrar(TipoLog.INFO, CERTIFICADO_GENERADO + ganador.getNombre());
+
                 Persistencia.guardarPartida(juego.getJugador1(), juego.getJugador2(), ganador);
+                GestionLog.registrar(TipoLog.INFO, PARTIDA_GUARDADA);
 
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle(TITULO_VICTORIA);
@@ -216,27 +249,27 @@ public class JuegoController {
                     cliente.cerrarConexion();
                 }
 
-                System.out.println(MENSAJE_DESPEDIDA);
+                GestionLog.registrar(TipoLog.INFO, MENSAJE_DESPEDIDA);
 
                 Thread shutdownThread = new Thread(() -> {
                     try {
-                        Thread.sleep(3000);
+                        Thread.sleep(TIEMPO_ESPERA_CIERRE);
                     } catch (InterruptedException e) {
                         Thread.currentThread().interrupt();
-                        System.err.println(HILO_CIERRE_INTERRUMPIDO + e.getMessage());
+                        GestionLog.registrar(TipoLog.ERROR, HILO_CIERRE_INTERRUMPIDO + e.getMessage());
                     } finally {
                         Platform.exit();
                         System.exit(0);
                     }
                 });
 
-                shutdownThread.setDaemon(true); 
+                shutdownThread.setDaemon(true);
                 shutdownThread.start();
 
             } catch (Exception e) {
-                System.err.println(ERROR_FINALIZAR_JUEGO + e.getMessage());
+                GestionLog.registrar(TipoLog.ERROR, ERROR_FINALIZAR_JUEGO + e.getMessage());
                 Platform.exit();
-                System.exit(1); 
+                System.exit(1);
             }
         }
     }

@@ -1,0 +1,60 @@
+[07/06/2025 03:18:19.395] [INFO] Servidor iniciado en puerto 44444
+[07/06/2025 03:18:24.553] [INFO] Iniciando cliente...
+[07/06/2025 03:18:24.584] [INFO] Cargando interfaz gr芍fica desde: /es/etg/psp/view/Inicio.fxml
+[07/06/2025 03:18:24.961] [INFO] Mostrando ventana principal
+[07/06/2025 03:19:30.726] [INFO] Servidor iniciado en puerto 44444
+[07/06/2025 03:19:34.043] [INFO] Iniciando cliente...
+[07/06/2025 03:19:34.079] [INFO] Cargando interfaz gr芍fica desde: /es/etg/psp/view/Inicio.fxml
+[07/06/2025 03:19:34.470] [INFO] Mostrando ventana principal
+[07/06/2025 03:20:53.367] [INFO] Servidor iniciado en puerto 44444
+[07/06/2025 03:20:57.374] [INFO] Iniciando cliente...
+[07/06/2025 03:20:57.410] [INFO] Cargando interfaz gr芍fica desde: /es/etg/psp/view/Inicio.fxml
+[07/06/2025 03:20:57.843] [INFO] Mostrando ventana principal
+[07/06/2025 03:21:03.243] [INFO] Inicio del m谷todo Aceptar
+[07/06/2025 03:21:03.244] [DEBUG] Nombres introducidos - Jugador1: J1, Jugador2: J2
+[07/06/2025 03:21:03.245] [INFO] Cargando vista de juego para jugadores: J1 y J2
+[07/06/2025 03:21:03.245] [INFO] Creando jugadores
+[07/06/2025 03:21:03.247] [DEBUG] Cargando FXML desde: /es/etg/psp/view/Juego.fxml
+[07/06/2025 03:21:03.296] [DEBUG] Inicializando controlador de juego con datos de jugadores
+[07/06/2025 03:21:03.298] [INFO] Iniciando juego con jugadores: J1 vs J2
+[07/06/2025 03:21:03.299] [INFO] Intentando conectar al servidor en localhost:44444
+[07/06/2025 03:21:03.326] [INFO] Conexi車n establecida con 谷xito
+[07/06/2025 03:21:03.330] [INFO] Cliente conectado desde /127.0.0.1
+[07/06/2025 03:21:03.335] [DEBUG] Hilo para cliente iniciado
+[07/06/2025 03:21:03.341] [DEBUG] Flujos de entrada/salida inicializados
+[07/06/2025 03:21:03.342] [INFO] Enviando jugadores: J1 y J2
+[07/06/2025 03:21:03.350] [INFO] Jugadores enviados correctamente
+[07/06/2025 03:21:03.394] [INFO] Jugadores recibidos: J1 y J2
+[07/06/2025 03:21:03.455] [INFO] Mostrando escena de juego
+[07/06/2025 03:21:03.996] [INFO] Juego iniciado
+[07/06/2025 03:21:03.998] [INFO] Turno iniciado para: J1
+[07/06/2025 03:21:05.397] [INFO] Turno sin operaci車n
+[07/06/2025 03:21:06.760] [INFO] Cambiando turno a: J1
+[07/06/2025 03:21:06.763] [INFO] Turno iniciado para: J1
+[07/06/2025 03:21:07.850] [INFO] Turno sin operaci車n
+[07/06/2025 03:21:08.918] [INFO] Cambiando turno a: J2
+[07/06/2025 03:21:08.920] [INFO] Turno iniciado para: J2
+[07/06/2025 03:21:09.471] [INFO] Operaci車n generada: 7 - 7
+[07/06/2025 03:21:11.810] [INFO] Respuesta recibida: 1
+[07/06/2025 03:21:11.812] [INFO] Respuesta verificada - Correcta: false
+[07/06/2025 03:21:12.364] [INFO] Cambiando turno a: J2
+[07/06/2025 03:21:12.367] [INFO] Turno iniciado para: J2
+[07/06/2025 03:21:13.521] [INFO] Turno sin operaci車n
+[07/06/2025 03:21:14.109] [INFO] Cambiando turno a: J2
+[07/06/2025 03:21:14.111] [INFO] Turno iniciado para: J2
+[07/06/2025 03:21:14.883] [INFO] Operaci車n generada: 3 * 2
+[07/06/2025 03:21:16.596] [INFO] Respuesta recibida: 1
+[07/06/2025 03:21:16.597] [INFO] Respuesta verificada - Correcta: false
+[07/06/2025 03:21:16.797] [INFO] Cambiando turno a: J2
+[07/06/2025 03:21:16.799] [INFO] Turno iniciado para: J2
+[07/06/2025 03:21:16.997] [INFO] Operaci車n generada: 24 / 8
+[07/06/2025 03:21:18.457] [INFO] Respuesta recibida: 1
+[07/06/2025 03:21:18.458] [INFO] Respuesta verificada - Correcta: false
+[07/06/2025 03:21:18.680] [INFO] Cambiando turno a: J2
+[07/06/2025 03:21:18.684] [INFO] Turno iniciado para: J2
+[07/06/2025 03:21:18.825] [INFO] Operaci車n generada: 9 + 5
+[07/06/2025 03:21:20.481] [WARN] Ingrese un n迆mero v芍lido
+[07/06/2025 03:21:20.916] [WARN] Ingrese un n迆mero v芍lido
+[07/06/2025 03:21:21.283] [WARN] Ingrese un n迆mero v芍lido
+[07/06/2025 03:21:24.771] [ERROR] Error al manejar cliente: Connection reset
+[07/06/2025 03:21:24.771] [INFO] Conexi車n con cliente cerrada

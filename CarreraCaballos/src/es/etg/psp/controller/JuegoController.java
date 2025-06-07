@@ -22,9 +22,6 @@ public class JuegoController {
     // Constantes para textos UI
     private static final String TEXTO_CERO = "0";
     private static final String TEXTO_VACIO = "";
-    private static final String FORMATO_PUNTOS_BASE = "%s obtiene %d puntos base";
-    private static final String MENSAJE_SIN_OPERACION = "No hay operación este turno. Haz clic en Aceptar para continuar.";
-    private static final String MENSAJE_RESPUESTA_CORRECTA = "¡Respuesta correcta! +5 puntos";
     private static final String FORMATO_RESPUESTA_INCORRECTA = "Respuesta incorrecta. Resultado correcto: %d";
     private static final String ERROR_NUMERO_INVALIDO = "Ingrese un número válido";
     private static final String SEPARADOR_JUGADORES = " vs ";
@@ -50,10 +47,12 @@ public class JuegoController {
     private static final String PARTIDA_GUARDADA = "Partida guardada en historial";
     private static final String LOG_JUEGO_INICIADO = "Juego iniciado";
     private static final String LOG_TURNO_SIN_OPERACION = "Turno sin operación";
+    private static final String LOG_AUTOMATICO_CAMBIO_TURNO = "Cambio automático de turno";
 
     // Constantes para puntos
     private static final int PUNTOS_EXTRA = 5;
     private static final int TIEMPO_ESPERA_CIERRE = 3000;
+    private static final int TIEMPO_ESPERA_SIN_OPERACION = 1000;
 
     @FXML
     private Label etiquetaJugador1, etiquetaJugador2;
@@ -71,7 +70,6 @@ public class JuegoController {
     private Cliente cliente;
     private Carrera juego;
     private Operacion operacionActual;
-    private boolean operacionIniciada = false;
     private boolean juegoIniciado = false;
 
     public void initData(Jugador jugador1, Jugador jugador2) {
@@ -102,7 +100,6 @@ public class JuegoController {
         if (!juegoIniciado) {
             juegoIniciado = true;
             botonComenzar.setVisible(false);
-            mostrarOperacionUI();
             GestionLog.registrar(TipoLog.INFO, LOG_JUEGO_INICIADO);
             jugarTurno();
         }
@@ -118,24 +115,40 @@ public class JuegoController {
 
             int basePoints = juego.getPuntosRonda();
             currentPlayer.sumarPuntos(basePoints);
-            mostrarMensaje(String.format(FORMATO_PUNTOS_BASE, currentPlayer.getNombre(), basePoints));
             actualizarPuntos();
 
             if (juego.hayOperacion()) {
                 operacionActual = juego.generarOperacion();
                 mostrarOperacion(operacionActual);
-                operacionIniciada = true;
                 GestionLog.registrar(TipoLog.INFO, OPERACION_GENERADA + operacionActual);
+                
+                mostrarOperacionUI();
+                campoRespuesta.requestFocus();
             } else {
                 resetearOperacionUI();
-                mostrarMensaje(MENSAJE_SIN_OPERACION);
-                operacionIniciada = false;
+                ocultarOperacionUI();
                 GestionLog.registrar(TipoLog.INFO, LOG_TURNO_SIN_OPERACION);
+                
+                new Thread(() -> {
+                    try {
+                        Thread.sleep(TIEMPO_ESPERA_SIN_OPERACION);
+                        Platform.runLater(() -> {
+                            cambiarTurno();
+                            if (!juego.hayGanador()) {
+                                jugarTurno();
+                            } else {
+                                mostrarGanador();
+                            }
+                        });
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                        GestionLog.registrar(TipoLog.ERROR, "Hilo de espera interrumpido: " + e.getMessage());
+                    }
+                }).start();
             }
 
             if (juego.hayGanador()) {
                 mostrarGanador();
-                return;
             }
         } catch (Exception e) {
             GestionLog.registrar(TipoLog.ERROR, ERROR_TURNO + e.getMessage());
@@ -145,36 +158,35 @@ public class JuegoController {
 
     @FXML
     private void Aceptar() {
-        if (!juegoIniciado)
+        if (!juegoIniciado || operacionActual == null)
             return;
 
-        if (operacionIniciada) {
-            try {
-                int respuesta = Integer.parseInt(campoRespuesta.getText());
-                GestionLog.registrar(TipoLog.INFO, RESPUESTA_RECIBIDA + respuesta);
+        try {
+            int respuesta = Integer.parseInt(campoRespuesta.getText());
+            GestionLog.registrar(TipoLog.INFO, RESPUESTA_RECIBIDA + respuesta);
 
-                boolean correcta = operacionActual.verificarResultado(respuesta);
-                GestionLog.registrar(TipoLog.INFO, RESPUESTA_VERIFICADA + correcta);
+            boolean correcta = operacionActual.verificarResultado(respuesta);
+            GestionLog.registrar(TipoLog.INFO, RESPUESTA_VERIFICADA + correcta);
 
-                if (correcta) {
-                    Jugador currentPlayer = juego.getTurno();
-                    currentPlayer.sumarPuntos(PUNTOS_EXTRA);
-                    mostrarMensaje(MENSAJE_RESPUESTA_CORRECTA);
-                } else {
-                    mostrarMensaje(String.format(FORMATO_RESPUESTA_INCORRECTA, operacionActual.getResultado()));
-                }
-
-                actualizarPuntos();
-            } catch (NumberFormatException e) {
-                GestionLog.registrar(TipoLog.WARN, ERROR_NUMERO_INVALIDO);
-                mostrarError(ERROR_NUMERO_INVALIDO);
-                return;
+            if (correcta) {
+                Jugador currentPlayer = juego.getTurno();
+                currentPlayer.sumarPuntos(PUNTOS_EXTRA);
+            } else {
+                mostrarMensaje(String.format(FORMATO_RESPUESTA_INCORRECTA, operacionActual.getResultado()));
             }
+
+            actualizarPuntos();
+        } catch (NumberFormatException e) {
+            GestionLog.registrar(TipoLog.WARN, ERROR_NUMERO_INVALIDO);
+            mostrarError(ERROR_NUMERO_INVALIDO);
+            return;
+        } finally {
+            resetearOperacionUI();
+            ocultarOperacionUI();
         }
 
         cambiarTurno();
-        resetearOperacionUI();
-        operacionIniciada = false;
+        GestionLog.registrar(TipoLog.INFO, LOG_AUTOMATICO_CAMBIO_TURNO);
 
         if (juego.hayGanador()) {
             mostrarGanador();
@@ -194,7 +206,6 @@ public class JuegoController {
         numero1Operacion.setText(String.valueOf(op.getNum1()));
         numero2Operacion.setText(String.valueOf(op.getNum2()));
         operador.setText(String.valueOf(op.getOperador()));
-        campoRespuesta.requestFocus();
     }
 
     private void resetearOperacionUI() {
@@ -289,4 +300,4 @@ public class JuegoController {
         alert.setContentText(msg);
         alert.showAndWait();
     }
-}
+}    
